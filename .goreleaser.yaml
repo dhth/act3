@@ -1,0 +1,43 @@
+version: 1
+
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+
+signs:
+  - cmd: cosign
+    stdin: "{{.Env.COSIGN_PASSWORD}}"
+    args:
+      - "sign-blob"
+      - "--key=cosign.key"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+      - "--yes" # needed on cosign 2.0.0+
+    artifacts: all
+
+
+brews:
+  - name: act3
+    repository:
+      owner: dhth
+      name: homebrew-tap
+    folder: Formula
+    license: MIT
+    homepage: "https://github.com/dhth/act3"
+    description: "Glance at the last 3 runs of your Github Actions"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^ci:"
