@@ -12,17 +12,23 @@ Glance at the results of the last 3 runs of your Github Actions.
 💾 Installation
 ---
 
+**homebrew**:
+
+```sh
+brew install dhth/tap/act3
+```
+
 **go**:
 
 ```sh
 go install github.com/dhth/act3@latest
 ```
 
-⚡️ Usage
+🛠️ Configuration
 ---
 
-Create a config file that looks like the following (the default location `act3`)
-will look for this file is `~/.config/act3/act3.yml.`
+Create a config file that looks like the following (`act3` will look for this
+file at `~/.config/act3/act3.yml.` by default).
 
 ```yaml
 workflows:
@@ -50,10 +56,29 @@ curl -L \
 # use node_id from the response
 ```
 
+⚡️ Usage
+
+### CLI output
+
 ```bash
 ACT3_GH_ACCESS_TOKEN="<YOUR_GH_TOKEN> \
 act3"
 ```
+
+### HTML output
+
+`act3` can also output the results in HTML format.
+
+
+```bash
+ACT3_GH_ACCESS_TOKEN="<YOUR_GH_TOKEN> \
+    act3" \
+    -config-file=./examples/html/act3.yml \
+    -format=html \
+    -html-template-file=./examples/html/template.html
+```
+
+A sample page generated via `act3` is running at [https://dhth.github.io/act3](https://dhth.github.io/act3), the source code for which is in the [examples/html](./examples/html) directory.
 
 Acknowledgements
 ---
