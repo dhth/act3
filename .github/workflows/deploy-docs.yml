@@ -14,14 +14,19 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
+env:
+  ACT3_VERSION: 0.1.0
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-    - name: Build
-      run: go build -v ./...
+    - name: Download act3
+      run: |
+        curl -s -OL https://github.com/dhth/act3/releases/download/v${{ env.ACT3_VERSION }}/act3_${{ env.ACT3_VERSION }}_linux_amd64.tar.gz
+        tar -xzvf act3_${{ env.ACT3_VERSION }}_linux_amd64.tar.gz
     - name: Generate doc
       run: |
         ./act3 \
