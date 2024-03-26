@@ -51,6 +51,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, quitProg()
 		}
 	case quitProgMsg:
+		if !m.outputPrinted {
+			switch m.outputFmt {
+			case HTMLFmt:
+				v := m.renderHTML()
+				fmt.Print(v)
+				m.outputPrinted = true
+			}
+		}
 		return m, tea.Quit
 	}
 	return m, nil

@@ -3,3 +3,4 @@ act3
 cosign.key
 cosign.pub
 justfile
+docs/sample.html

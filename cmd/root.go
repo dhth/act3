@@ -15,6 +15,11 @@ func die(msg string, args ...any) {
 	os.Exit(1)
 }
 
+var (
+	format           = flag.String("format", "", "output format to use; possible values: html")
+	htmlTemplateFile = flag.String("html-template-file", "", "path of the HTML template file to use")
+)
+
 func Execute() {
 	currentUser, err := user.Current()
 	var defaultConfigFilePath string
@@ -34,6 +39,16 @@ func Execute() {
 		die("config-file cannot be empty")
 	}
 
+	var outputFmt ui.OutputFmt
+	if *format != "" {
+		switch *format {
+		case "html":
+			outputFmt = ui.HTMLFmt
+		default:
+			die("unsupported value for format")
+		}
+	}
+
 	configFilePathExpanded := expandTilde(*configFilePath)
 
 	_, err = os.Stat(configFilePathExpanded)
@@ -49,10 +64,23 @@ func Execute() {
 		die(cfgErrSuggestion(fmt.Sprintf("No workflows found")))
 	}
 
+	var htmlTemplate string
+	if *htmlTemplateFile != "" {
+		_, err := os.Stat(*htmlTemplateFile)
+		if os.IsNotExist(err) {
+			die(fmt.Sprintf("Error: template file doesn't exist at %q", *htmlTemplateFile))
+		}
+		templateFileContents, err := os.ReadFile(*htmlTemplateFile)
+		if err != nil {
+			die(fmt.Sprintf("Error: couldn't read template file %q", *htmlTemplateFile))
+		}
+		htmlTemplate = string(templateFileContents)
+	}
+
 	ghClient, err := getGHClient()
 	if err != nil {
 		die("Error: %q", err.Error())
 	}
 
-	ui.RenderUI(ghClient, workflows)
+	ui.RenderUI(ghClient, workflows, outputFmt, htmlTemplate)
 }

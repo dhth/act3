@@ -10,9 +10,12 @@ type model struct {
 	ghClient           *githubv4.Client
 	workFlowResults    map[string][]string
 	numResults         int
+	outputFmt          OutputFmt
 	message            string
+	htmlTemplate       string
 	errors             []error
 	failedWorkflowURLs map[string]string
+	outputPrinted      bool
 }
 
 func (m model) Init() tea.Cmd {

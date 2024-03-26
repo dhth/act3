@@ -39,3 +39,29 @@ type NodeResult struct {
 type QueryResult struct {
 	NodeResult `graphql:"node(id: $workflowId)"`
 }
+
+type OutputFmt uint
+
+const (
+	UnspecifiedFmt OutputFmt = iota
+	HTMLFmt
+)
+
+type HTMLWorkflowResult struct {
+	Result  string
+	Success bool
+}
+
+type HTMLDataRow struct {
+	Key  string
+	Data []HTMLWorkflowResult
+}
+
+type HTMLData struct {
+	Title     string
+	Columns   []string
+	Rows      []HTMLDataRow
+	Failures  map[string]string
+	Errors    *[]error
+	Timestamp string
+}

@@ -1,8 +1,12 @@
 package ui
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
+	"time"
+
+	"html/template"
 
 	"github.com/charmbracelet/lipgloss"
 )
@@ -11,6 +15,77 @@ const (
 	RUN_NUMBER_WIDTH    = 25
 	WORKFLOW_NAME_WIDTH = 30
 )
+
+const (
+	ErrorFetchingVersion = "error"
+	SystemNotFound       = "not found"
+)
+
+func (m model) renderHTML() string {
+
+	var columns []string
+	var rows []HTMLDataRow
+
+	data := HTMLData{
+		Title: "act3",
+	}
+
+	columns = append(columns, "workflow")
+	for _, env := range []string{"last", "2nd last", "3rd last"} {
+		columns = append(columns, env)
+	}
+
+	for _, workflow := range m.workflows {
+
+		var workflowKey string
+		if workflow.Key != nil {
+			workflowKey = *workflow.Key
+		} else {
+			workflowKey = fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name)
+		}
+
+		var data []HTMLWorkflowResult
+		for _, workflowRunResult := range m.workFlowResults[workflow.ID] {
+			data = append(data, HTMLWorkflowResult{
+				Result:  workflowRunResult,
+				Success: strings.Contains(workflowRunResult, "SUCCESS"),
+			})
+		}
+		rows = append(rows, HTMLDataRow{
+			Key:  workflowKey,
+			Data: data,
+		})
+	}
+
+	data.Columns = columns
+	data.Rows = rows
+	if len(m.errors) > 0 {
+		data.Errors = &m.errors
+	}
+	if len(m.failedWorkflowURLs) > 0 {
+		data.Failures = m.failedWorkflowURLs
+	}
+	data.Timestamp = time.Now().Format("2006-01-02 15:04:05 MST")
+
+	var tmpl *template.Template
+	var err error
+	if m.htmlTemplate == "" {
+		tmpl, err = template.New("act3").Parse(HTMLTemplText)
+	} else {
+		tmpl, err = template.New("act3").Parse(m.htmlTemplate)
+	}
+	if err != nil {
+		return fmt.Sprintf(string(errorTemplate), err.Error())
+	}
+
+	var buf bytes.Buffer
+	err = tmpl.Execute(&buf, data)
+	if err != nil {
+		return fmt.Sprintf(string(errorTemplate), err.Error())
+	}
+
+	return buf.String()
+}
 
 func (m model) View() string {
 	var s string

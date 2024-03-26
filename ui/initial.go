@@ -2,7 +2,7 @@ package ui
 
 import "github.com/shurcooL/githubv4"
 
-func InitialModel(ghClient *githubv4.Client, workflows []Workflow) model {
+func InitialModel(ghClient *githubv4.Client, workflows []Workflow, outputFmt OutputFmt, htmlTemplate string) model {
 
 	workflowResults := make(map[string][]string)
 
@@ -21,6 +21,8 @@ func InitialModel(ghClient *githubv4.Client, workflows []Workflow) model {
 		ghClient:           ghClient,
 		workflows:          workflows,
 		workFlowResults:    workflowResults,
+		outputFmt:          outputFmt,
+		htmlTemplate:       htmlTemplate,
 		message:            "hello",
 		errors:             errors,
 		failedWorkflowURLs: failedWorkflowRunURLs,
