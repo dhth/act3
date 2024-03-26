@@ -1,0 +1,57 @@
+workflows:
+
+- id: W_kwDOLb3Pms4FRxjX
+  repo: dhth/cueitup
+  name: build
+- id: W_kwDOLb3Pms4FRxjY
+  repo: dhth/cueitup
+  name: release
+
+- id: W_kwDOLghtl84FWTlZ
+  repo: dhth/ecsv
+  name: build
+- id: W_kwDOLghtl84FWTla
+  repo: dhth/ecsv
+  name: release
+
+- id: W_kwDOLdhMLM4FTMIx
+  repo: dhth/ez
+  name: build
+- id: W_kwDOLdhMLM4FTMIy
+  repo: dhth/ez
+  name: release
+
+- id: W_kwDOLd1QjM4FTgH0
+  repo: dhth/inc
+  name: build
+- id: W_kwDOLd1QjM4FTgH1
+  repo: dhth/inc
+  name: release
+
+- id: W_kwDOLa0twM4FRynm
+  repo: dhth/kplay
+  name: build
+- id: W_kwDOLa0twM4FRynn
+  repo: dhth/kplay
+  name: release
+
+- id: W_kwDOLafHJ84FQglT
+  repo: dhth/outtasync
+  name: build
+- id: W_kwDOLafHJ84FQglU
+  repo: dhth/outtasync
+  name: release
+
+- id: W_kwDOLe-lJM4FUlXo
+  repo: dhth/punchout
+  name: build
+- id: W_kwDOLe-lJM4FVCrl
+  repo: dhth/punchout
+  name: release
+
+- id: W_kwDOLjRZQ84FZMD2
+  repo: dhth/schemas
+  name: build
+- id: W_kwDOLjRZQ84FZMD3
+  repo: dhth/schemas
+  name: release
