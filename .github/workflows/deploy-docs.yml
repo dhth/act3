@@ -25,15 +25,15 @@ jobs:
     - name: Generate doc
       run: |
         ./act3 \
-          -config-file=./docs/act3.yml \
+          -config-file=./examples/html/act3.yml \
           -format=html \
-          -html-template-file=./docs/template.html > ./docs/index.html
+          -html-template-file=./examples/html/template.html > ./examples/html/docs/index.html
       env:
         ACT3_GH_ACCESS_TOKEN: ${{secrets.ACT3_GH_ACCESS_TOKEN}}
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ./docs
+        path: ./examples/html/docs
 
   deploy:
     environment:
