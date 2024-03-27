@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  ACT3_VERSION: 0.2.0
+  ACT3_VERSION: 0.2.1
 
 jobs:
   build:
