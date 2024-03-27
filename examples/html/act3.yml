@@ -6,9 +6,6 @@ workflows:
 - id: W_kwDOLkC0eM4FaKWA
   repo: dhth/act3
   name: release
-- id: W_kwDOLkC0eM4FcP58
-  repo: dhth/act3
-  name: deploy-docs
 
 - id: W_kwDOLb3Pms4FRxjX
   repo: dhth/cueitup
