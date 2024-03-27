@@ -28,22 +28,22 @@ const (
                     <td class="font-bold px-4 py-2 text-[#d3869b]">{{.Key}}</td>
                     {{range .Data -}}
                         {{if .Error}}
-                            <td class="px-4 py-2">
+                            <td class="px-4 py-2 font-mono">
                                 <p class="font-bold inline text-[#fabd2f]">{{.Details.Number}}</p>
                                 <p class="inline text-[#fabd2f]">{{.Details.Indicator}}</p>
-                                <p class="inline italic text-[#fabd2f]">{{.Details.Context}}</p>
+                                <p class="px-1 inline italic text-[#fabd2f]">{{.Details.Context}}</p>
                             </td>
                         {{else if .Success}}
-                            <td class="px-4 py-2">
+                            <td class="px-4 py-2 font-mono">
                                 <p class="font-bold inline text-[#b8bb26]">{{.Details.Number}}</p>
                                 <p class="inline text-[#b8bb26]">{{.Details.Indicator}}</p>
-                                <p class="inline italic text-[#7c6f64]">{{.Details.Context}}</p>
+                                <p class="px-1 inline italic text-[#7c6f64]">{{.Details.Context}}</p>
                             </td>
                         {{else}}
-                            <td class="px-4 py-2">
+                            <td class="px-4 py-2 font-mono">
                                 <p class="font-bold inline text-[#fb4934]">{{.Details.Number}}</p>
                                 <p class="inline text-[#fb4934]">{{.Details.Indicator}}</p>
-                                <p class="inline italic text-[#7c6f64]">{{.Details.Context}}</p>
+                                <p class="px-1 inline italic text-[#7c6f64]">{{.Details.Context}}</p>
                             </td>
                         {{end}}
                     {{end -}}
