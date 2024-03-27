@@ -3,16 +3,16 @@ package ui
 import (
 	"bytes"
 	"fmt"
-	"strings"
 	"time"
 
 	"html/template"
 
 	"github.com/charmbracelet/lipgloss"
+	humanize "github.com/dustin/go-humanize"
 )
 
 const (
-	RUN_NUMBER_WIDTH    = 25
+	RUN_NUMBER_WIDTH    = 30
 	WORKFLOW_NAME_WIDTH = 30
 )
 
@@ -24,9 +24,9 @@ const (
 func (m model) renderHTML() string {
 
 	var columns []string
-	var rows []HTMLDataRow
+	var rows []htmlDataRow
 
-	data := HTMLData{
+	data := htmlData{
 		Title: "act3",
 	}
 
@@ -44,14 +44,47 @@ func (m model) renderHTML() string {
 			workflowKey = fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name)
 		}
 
-		var data []HTMLWorkflowResult
-		for _, workflowRunResult := range m.workFlowResults[workflow.ID] {
-			data = append(data, HTMLWorkflowResult{
-				Result:  workflowRunResult,
-				Success: strings.Contains(workflowRunResult, "SUCCESS"),
-			})
+		var data []htmlWorkflowResult
+		workflowResults := m.workFlowResults[workflow.ID]
+		if workflowResults.err != nil {
+			for i := 0; i < 3; i++ {
+				data = append(data, htmlWorkflowResult{
+					Details: htmlRunDetails{
+						Number:    fmt.Sprintf("#%2d", workflowResults.errorIndex),
+						Indicator: "😵",
+						Context:   "(error)",
+					},
+					Success: false,
+					Error:   true,
+				})
+			}
+
+		} else {
+			for _, rr := range workflowResults.results {
+				var resultSignifier string
+				var success bool
+				if rr.CheckSuite.Conclusion == "SUCCESS" {
+					resultSignifier = "✅"
+					success = true
+				} else {
+					resultSignifier = "❌"
+					success = false
+				}
+				var resultsDate = "(" + humanize.Time(rr.CreatedAt.Time) + ")"
+
+				data = append(data, htmlWorkflowResult{
+					Details: htmlRunDetails{
+						Number:    fmt.Sprintf("#%2d", rr.RunNumber),
+						Indicator: resultSignifier,
+						Context:   resultsDate,
+					},
+					Success: success,
+				},
+				)
+
+			}
 		}
-		rows = append(rows, HTMLDataRow{
+		rows = append(rows, htmlDataRow{
 			Key:  workflowKey,
 			Data: data,
 		})
@@ -105,24 +138,44 @@ func (m model) View() string {
 	var style lipgloss.Style
 	for _, workflow := range m.workflows {
 		if workflow.Key != nil {
-			s += fmt.Sprintf("%s", workflowStyle.Render(RightPadTrim(*workflow.Key, 28)))
+			s += fmt.Sprintf("%s", workflowStyle.Render(RightPadTrim(*workflow.Key, WORKFLOW_NAME_WIDTH)))
 		} else {
-			s += fmt.Sprintf("%s", workflowStyle.Render(RightPadTrim(fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name), 28)))
+			s += fmt.Sprintf("%s", workflowStyle.Render(RightPadTrim(fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name), WORKFLOW_NAME_WIDTH)))
 		}
-		for _, workflowRunResult := range m.workFlowResults[workflow.ID] {
-			if strings.Contains(workflowRunResult, "SUCCESS") {
-				style = successResultStyle
-			} else {
-				style = failureResultStyle
+		workflowResults := m.workFlowResults[workflow.ID]
+		if workflowResults.err != nil {
+			for i := 0; i < 3; i++ {
+				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
+					errorTextStyle.Render(fmt.Sprintf("#%2d", workflowResults.errorIndex)),
+					"😵",
+					errorTextStyle.Render("(error)"),
+				))
 			}
-			s += fmt.Sprintf("%s    ", style.Render(workflowRunResult))
+		} else {
+
+			for _, rr := range workflowResults.results {
+				var resultSignifier string
+				if rr.CheckSuite.Conclusion == "SUCCESS" {
+					resultSignifier = "✅"
+					style = successTextStyle
+				} else {
+					resultSignifier = "❌"
+					style = failureTextStyle
+				}
+				var resultsDate = "(" + humanize.Time(rr.CreatedAt.Time) + ")"
+				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
+					style.Render(fmt.Sprintf("#%2d", rr.RunNumber)),
+					resultSignifier,
+					faintStyle.Render(resultsDate),
+				))
+			}
 		}
 		s += "\n"
 	}
 
 	if len(m.failedWorkflowURLs) > 0 {
 		s += "\n"
-		s += errorHeadingStyle.Render("Failed runs")
+		s += failureHeadingStyle.Render("Failed runs")
 		s += "\n"
 		for k, v := range m.failedWorkflowURLs {
 			s += errorDetailStyle.Render(fmt.Sprintf("%s:\t%s", k, v))
@@ -135,7 +188,7 @@ func (m model) View() string {
 		s += errorHeadingStyle.Render("Errors")
 		s += "\n"
 		for index, err := range m.errors {
-			s += errorDetailStyle.Render(fmt.Sprintf("[%2d]: %s", index+1, err.Error()))
+			s += errorDetailStyle.Render(fmt.Sprintf("[#%2d]: %s", index, err.Error()))
 			s += "\n"
 		}
 	}

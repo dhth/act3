@@ -6,7 +6,7 @@
 Glance at the results of the last 3 runs of your Github Actions.
 
 <p align="center">
-  <img src="./act3.png" alt="Usage" />
+  <img src="./static/act3.png" alt="Usage" />
 </p>
 
 💾 Installation
@@ -78,7 +78,15 @@ ACT3_GH_ACCESS_TOKEN="<YOUR_GH_TOKEN> \
     -html-template-file=./examples/html/template.html
 ```
 
-A sample page generated via `act3` is running at [https://dhth.github.io/act3](https://dhth.github.io/act3), the source code for which is in the [examples/html](./examples/html) directory.
+The resultant HTML page looks like this.
+
+<p align="center">
+  <img src="./static/act3_html.png" alt="Usage" />
+</p>
+
+A sample page generated via `act3` is running at
+[https://dhth.github.io/act3](https://dhth.github.io/act3), the source code for
+which is in the [examples/html](./examples/html) directory.
 
 Acknowledgements
 ---

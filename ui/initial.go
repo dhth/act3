@@ -2,17 +2,13 @@ package ui
 
 import "github.com/shurcooL/githubv4"
 
+const (
+	NUM_RUNS_TO_DISPLAY = 3
+)
+
 func InitialModel(ghClient *githubv4.Client, workflows []Workflow, outputFmt OutputFmt, htmlTemplate string) model {
 
-	workflowResults := make(map[string][]string)
-
-	for _, w := range workflows {
-		var results []string
-		for i := 0; i < 3; i++ {
-			results = append(results, "...")
-		}
-		workflowResults[w.ID] = results
-	}
+	workflowResults := make(map[string]workflowRunResults)
 
 	errors := make([]error, 0)
 	failedWorkflowRunURLs := make(map[string]string)

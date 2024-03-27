@@ -1,5 +1,7 @@
 package ui
 
+import "github.com/shurcooL/githubv4"
+
 type Workflow struct {
 	ID   string  `yaml:"id"`
 	Repo string  `yaml:"repo"`
@@ -16,7 +18,7 @@ type WorkflowRunNodesResult struct {
 	Id         string
 	RunNumber  int
 	Url        string
-	CreatedAt  string
+	CreatedAt  githubv4.DateTime
 	CheckSuite struct {
 		Commit     CommitResult
 		Conclusion string
@@ -47,20 +49,33 @@ const (
 	HTMLFmt
 )
 
-type HTMLWorkflowResult struct {
-	Result  string
+type workflowRunResults struct {
+	results    []WorkflowRunNodesResult
+	err        error
+	errorIndex int
+}
+
+type htmlRunDetails struct {
+	Number    string
+	Indicator string
+	Context   string
+}
+
+type htmlWorkflowResult struct {
+	Details htmlRunDetails
 	Success bool
+	Error   bool
 }
 
-type HTMLDataRow struct {
+type htmlDataRow struct {
 	Key  string
-	Data []HTMLWorkflowResult
+	Data []htmlWorkflowResult
 }
 
-type HTMLData struct {
+type htmlData struct {
 	Title     string
 	Columns   []string
-	Rows      []HTMLDataRow
+	Rows      []htmlDataRow
 	Failures  map[string]string
 	Errors    *[]error
 	Timestamp string

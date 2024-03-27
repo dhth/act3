@@ -19,17 +19,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case WorkflowRunsFetchedMsg:
 		if msg.err != nil {
 			m.errors = append(m.errors, msg.err)
-			errorIndex := len(m.errors)
-			var results []string
-			for i := 0; i < 3; i++ {
-				results = append(results, fmt.Sprintf("%s [%2d]", "error", errorIndex))
-			}
-			m.workFlowResults[msg.workflow.ID] = results
+			m.workFlowResults[msg.workflow.ID] = workflowRunResults{err: msg.err, errorIndex: len(m.errors) - 1}
 		} else {
-			var results []string
-			var count int
+			m.workFlowResults[msg.workflow.ID] = workflowRunResults{results: msg.query.Workflow.Runs.Nodes, err: msg.err, errorIndex: len(m.errors)}
 			for _, result := range msg.query.NodeResult.Workflow.Runs.Nodes {
-				results = append(results, fmt.Sprintf("#%2d: %s", result.RunNumber, result.CheckSuite.Conclusion))
 				if result.CheckSuite.Conclusion == "FAILURE" {
 					var workflowRunKey string
 					if msg.workflow.Key != nil {
@@ -39,12 +32,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					}
 					m.failedWorkflowURLs[fmt.Sprintf("%s #%2d", workflowRunKey, result.RunNumber)] = result.Url
 				}
-				count += 1
 			}
-			for i := 0; i < 3-count; i++ {
-				results = append(results, "")
-			}
-			m.workFlowResults[msg.workflow.ID] = results
+			m.workFlowResults[msg.workflow.ID] = workflowRunResults{results: msg.query.Workflow.Runs.Nodes}
 		}
 		m.numResults += 1
 		if m.numResults >= len(m.workflows) {

@@ -8,7 +8,7 @@ import (
 type model struct {
 	workflows          []Workflow
 	ghClient           *githubv4.Client
-	workFlowResults    map[string][]string
+	workFlowResults    map[string]workflowRunResults
 	numResults         int
 	outputFmt          OutputFmt
 	message            string

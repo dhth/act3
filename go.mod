@@ -5,6 +5,7 @@ go 1.22.0
 require (
 	github.com/charmbracelet/bubbletea v0.25.0
 	github.com/charmbracelet/lipgloss v0.10.0
+	github.com/dustin/go-humanize v1.0.1
 	github.com/shurcooL/githubv4 v0.0.0-20240120211514-18a1ae0e79dc
 	golang.org/x/oauth2 v0.18.0
 	gopkg.in/yaml.v3 v3.0.1
