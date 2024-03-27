@@ -70,7 +70,7 @@ func (m model) renderHTML() string {
 					resultSignifier = "❌"
 					success = false
 				}
-				var resultsDate = "(" + humanize.Time(rr.CreatedAt.Time) + ")"
+				var resultsDate = "(" + rr.CreatedAt.Time.Format("Jan 2") + ")"
 
 				data = append(data, htmlWorkflowResult{
 					Details: htmlRunDetails{
