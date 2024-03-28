@@ -27,6 +27,12 @@ jobs:
       run: |
         curl -s -OL https://github.com/dhth/act3/releases/download/v${{ env.ACT3_VERSION }}/act3_${{ env.ACT3_VERSION }}_linux_amd64.tar.gz
         tar -xzvf act3_${{ env.ACT3_VERSION }}_linux_amd64.tar.gz
+    - name: Generate GH token
+      id: generate-token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ vars.GH_TOKEN_APP_ID }}
+        private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
     - name: Generate doc
       run: |
         ./act3 \
@@ -34,7 +40,7 @@ jobs:
           -format=html \
           -html-template-file=./examples/html/template.html > ./examples/html/docs/index.html
       env:
-        ACT3_GH_ACCESS_TOKEN: ${{secrets.ACT3_GH_ACCESS_TOKEN}}
+        ACT3_GH_ACCESS_TOKEN: ${{ steps.generate-token.outputs.token }}
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
