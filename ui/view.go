@@ -3,6 +3,7 @@ package ui
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"time"
 
 	"html/template"
@@ -50,9 +51,9 @@ func (m model) renderHTML() string {
 			for i := 0; i < 3; i++ {
 				data = append(data, htmlWorkflowResult{
 					Details: htmlRunDetails{
-						Number:    fmt.Sprintf("#%2d", workflowResults.errorIndex),
-						Indicator: "😵",
-						Context:   "(error)",
+						NumberFormatted: fmt.Sprintf("#%2d", workflowResults.errorIndex),
+						Indicator:       "😵",
+						Context:         "(error)",
 					},
 					Success: false,
 					Error:   true,
@@ -72,13 +73,21 @@ func (m model) renderHTML() string {
 				}
 				var resultsDate = "(" + rr.CreatedAt.Time.Format("Jan 2") + ")"
 
+				var url string
+				if workflow.Url != nil {
+					url = strings.Replace(*workflow.Url, "{{runNumber}}", fmt.Sprintf("%d", rr.RunNumber), -1)
+				} else {
+					url = rr.Url
+				}
 				data = append(data, htmlWorkflowResult{
 					Details: htmlRunDetails{
-						Number:    fmt.Sprintf("#%2d", rr.RunNumber),
-						Indicator: resultSignifier,
-						Context:   resultsDate,
+						NumberFormatted: fmt.Sprintf("#%2d", rr.RunNumber),
+						RunNumber:       fmt.Sprintf("%d", rr.RunNumber),
+						Indicator:       resultSignifier,
+						Context:         resultsDate,
 					},
 					Success: success,
+					Url:     url,
 				},
 				)
 

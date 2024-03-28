@@ -3,16 +3,20 @@ workflows:
 - id: W_kwDOLkC0eM4FaKV_
   repo: dhth/act3
   name: build
+  url: https://asampleurl.com/{{runNumber}}
 - id: W_kwDOLkC0eM4FaKWA
   repo: dhth/act3
   name: release
+  url: https://asampleurl.com/{{runNumber}}
 
 - id: W_kwDOLb3Pms4FRxjX
   repo: dhth/cueitup
   name: build
+  url: https://dhth.github.io/cueitup
 - id: W_kwDOLb3Pms4FRxjY
   repo: dhth/cueitup
   name: release
+  url: https://dhth.github.io/cueitup
 
 - id: W_kwDOLghtl84FWTlZ
   repo: dhth/ecsv

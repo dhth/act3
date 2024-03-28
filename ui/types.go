@@ -7,6 +7,7 @@ type Workflow struct {
 	Repo string  `yaml:"repo"`
 	Name string  `yaml:"name"`
 	Key  *string `yaml:"key"`
+	Url  *string `yaml:"url"`
 }
 
 type WorkflowRunNodesResult struct {
@@ -50,13 +51,15 @@ type workflowRunResults struct {
 }
 
 type htmlRunDetails struct {
-	Number    string
-	Indicator string
-	Context   string
+	NumberFormatted string
+	RunNumber       string
+	Indicator       string
+	Context         string
 }
 
 type htmlWorkflowResult struct {
 	Details htmlRunDetails
+	Url     string
 	Success bool
 	Error   bool
 }
