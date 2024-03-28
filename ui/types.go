@@ -9,18 +9,12 @@ type Workflow struct {
 	Key  *string `yaml:"key"`
 }
 
-type CommitResult struct {
-	Oid     string
-	Message string
-}
-
 type WorkflowRunNodesResult struct {
 	Id         string
 	RunNumber  int
 	Url        string
 	CreatedAt  githubv4.DateTime
 	CheckSuite struct {
-		Commit     CommitResult
 		Conclusion string
 	}
 }
