@@ -32,9 +32,7 @@ func (m model) renderHTML() string {
 	}
 
 	columns = append(columns, "workflow")
-	for _, env := range []string{"last", "2nd last", "3rd last"} {
-		columns = append(columns, env)
-	}
+	columns = append(columns, []string{"last", "2nd last", "3rd last"}...)
 
 	for _, workflow := range m.workflows {
 
@@ -136,7 +134,7 @@ func (m model) View() string {
 	s += " " + headerStyle.Render("act3")
 	s += "\n\n"
 
-	s += fmt.Sprintf("%s", workflowStyle.Render("workflow"))
+	s += workflowStyle.Render("workflow")
 
 	headers := []string{"last", "2nd last", "3rd last"}
 	for _, header := range headers {
@@ -147,9 +145,9 @@ func (m model) View() string {
 	var style lipgloss.Style
 	for _, workflow := range m.workflows {
 		if workflow.Key != nil {
-			s += fmt.Sprintf("%s", workflowStyle.Render(RightPadTrim(*workflow.Key, WORKFLOW_NAME_WIDTH)))
+			s += workflowStyle.Render(RightPadTrim(*workflow.Key, WORKFLOW_NAME_WIDTH))
 		} else {
-			s += fmt.Sprintf("%s", workflowStyle.Render(RightPadTrim(fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name), WORKFLOW_NAME_WIDTH)))
+			s += workflowStyle.Render(RightPadTrim(fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name), WORKFLOW_NAME_WIDTH))
 		}
 		workflowResults := m.workFlowResults[workflow.ID]
 		if workflowResults.err != nil {
@@ -187,7 +185,7 @@ func (m model) View() string {
 		s += failureHeadingStyle.Render("Failed runs")
 		s += "\n"
 		for k, v := range m.failedWorkflowURLs {
-			s += errorDetailStyle.Render(fmt.Sprintf("%s:\t%s", k, v))
+			s += errorDetailStyle.Render(fmt.Sprintf("%s%s", RightPadTrim(k, 65), v))
 			s += "\n"
 		}
 	}

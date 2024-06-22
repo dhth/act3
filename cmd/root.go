@@ -61,7 +61,7 @@ func Execute() {
 		die(cfgErrSuggestion(fmt.Sprintf("Error reading config: %v", configFilePathExpanded)))
 	}
 	if len(workflows) == 0 {
-		die(cfgErrSuggestion(fmt.Sprintf("No workflows found")))
+		die(cfgErrSuggestion("No workflows found"))
 	}
 
 	var htmlTemplate string

@@ -20,19 +20,12 @@ var (
 		PaddingRight(1).
 		Foreground(lipgloss.Color(BACKGROUND_COLOR))
 
-	fgStylePlain = lipgloss.NewStyle().
-			PaddingLeft(1).
-			PaddingRight(1)
-
-	headerStyle = fgStyle.Copy().
+	headerStyle = fgStyle.
 			Align(lipgloss.Center).
 			Bold(true).
 			Background(lipgloss.Color(HEADER_COLOR))
 
-	headerStylePlain = fgStylePlain.Copy().
-				Align(lipgloss.Center)
-
-	runNumberStyle = fgStyle.Copy().
+	runNumberStyle = fgStyle.
 			Align(lipgloss.Center).
 			Bold(true).
 			Background(lipgloss.Color(RUN_NUMBER_COLOR)).
@@ -42,13 +35,13 @@ var (
 			PaddingLeft(1).
 			PaddingRight(1)
 
-	workflowStyle = nonFgStyle.Copy().
+	workflowStyle = nonFgStyle.
 			Align(lipgloss.Left).
 			Bold(true).
 			Foreground(lipgloss.Color(WORKFLOW_COLOR)).
 			Width(WORKFLOW_NAME_WIDTH)
 
-	runResultStyle = nonFgStyle.Copy().
+	runResultStyle = nonFgStyle.
 			PaddingLeft((RUN_NUMBER_WIDTH - 20) / 2). // TODO: This is a clumsy hack; make it better
 			Width(RUN_NUMBER_WIDTH + 4)
 
@@ -67,14 +60,14 @@ var (
 	faintStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(CONTEXT_COLOR))
 
-	failureHeadingStyle = nonFgStyle.Copy().
+	failureHeadingStyle = nonFgStyle.
 				Bold(true).
 				Foreground(lipgloss.Color(FAILURE_COLOR))
 
-	errorHeadingStyle = nonFgStyle.Copy().
+	errorHeadingStyle = nonFgStyle.
 				Bold(true).
 				Foreground(lipgloss.Color(ERROR_COLOR))
 
-	errorDetailStyle = nonFgStyle.Copy().
+	errorDetailStyle = nonFgStyle.
 				Foreground(lipgloss.Color(ERROR_DETAIL_COLOR))
 )
