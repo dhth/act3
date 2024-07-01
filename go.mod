@@ -3,7 +3,7 @@ module github.com/dhth/act3
 go 1.22.0
 
 require (
-	github.com/charmbracelet/bubbletea v0.26.5
+	github.com/charmbracelet/bubbletea v0.26.6
 	github.com/charmbracelet/lipgloss v0.11.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/shurcooL/githubv4 v0.0.0-20240429030203-be2daab69064
