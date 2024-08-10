@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strings"
 	"time"
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
@@ -21,6 +22,8 @@ const (
 )
 
 var (
+	errFlagCombIncorrect       = errors.New("flag combination incorrect")
+	errIncorrectRepoProvided   = errors.New("incorrect repo provided")
 	errCouldntGetConfigDir     = errors.New("couldn't get your config directory")
 	errConfigFilePathEmpty     = errors.New("config file path is empty")
 	errIncorrectOutputFmt      = errors.New("incorrect value for output format provided")
@@ -37,6 +40,7 @@ var (
 	format           = flag.String("format", "", "output format to use; possible values: html")
 	htmlTemplateFile = flag.String("html-template-file", "", "path of the HTML template file to use")
 	global           = flag.Bool("g", false, "whether to use workflows defined globally via the config file")
+	repo             = flag.String("r", "", "repo to fetch worflows for, in the format \"owner/repo\"")
 )
 
 func Execute() error {
@@ -69,8 +73,20 @@ Let %s know about this via %s.
 
 	flag.Parse()
 
+	// flag validation
 	if *configFilePath == "" {
 		return fmt.Errorf("%w", errConfigFilePathEmpty)
+	}
+
+	if *global && *repo != "" {
+		return fmt.Errorf("%w; -g and -r cannot both be provided at the same time", errFlagCombIncorrect)
+	}
+
+	if *repo != "" {
+		repoEls := strings.Split(*repo, "/")
+		if len(repoEls) != 2 {
+			return fmt.Errorf("%w; repo needs to be in the format \"owner/repo\"", errIncorrectRepoProvided)
+		}
 	}
 
 	var outputFmt ui.OutputFmt
@@ -81,6 +97,19 @@ Let %s know about this via %s.
 		default:
 			return fmt.Errorf("%w", errIncorrectOutputFmt)
 		}
+	}
+
+	var htmlTemplate string
+	if *htmlTemplateFile != "" {
+		_, err := os.Stat(*htmlTemplateFile)
+		if os.IsNotExist(err) {
+			return fmt.Errorf("%w: path: %s", errTemplateFileDoesntExit, *htmlTemplateFile)
+		}
+		templateFileContents, err := os.ReadFile(*htmlTemplateFile)
+		if err != nil {
+			return fmt.Errorf("%w: %s", errCouldntReadTemplateFile, err.Error())
+		}
+		htmlTemplate = string(templateFileContents)
 	}
 
 	clientOpts := ghapi.ClientOptions{
@@ -107,9 +136,13 @@ Let %s know about this via %s.
 		}
 
 	} else {
-		currentRepo, err = getCurrentRepo()
-		if err != nil {
-			return err
+		if *repo != "" {
+			currentRepo = *repo
+		} else {
+			currentRepo, err = getCurrentRepo()
+			if err != nil {
+				return err
+			}
 		}
 		ghRClient, err := ghapi.NewRESTClient(clientOpts)
 		if err != nil {
@@ -124,19 +157,6 @@ Let %s know about this via %s.
 
 	if len(workflows) == 0 {
 		return fmt.Errorf("%w", errNoWorkflows)
-	}
-
-	var htmlTemplate string
-	if *htmlTemplateFile != "" {
-		_, err := os.Stat(*htmlTemplateFile)
-		if os.IsNotExist(err) {
-			return fmt.Errorf("%w: path: %s", errTemplateFileDoesntExit, *htmlTemplateFile)
-		}
-		templateFileContents, err := os.ReadFile(*htmlTemplateFile)
-		if err != nil {
-			return fmt.Errorf("%w: %s", errCouldntReadTemplateFile, err.Error())
-		}
-		htmlTemplate = string(templateFileContents)
 	}
 
 	ghClient, err := ghapi.NewGraphQLClient(clientOpts)
