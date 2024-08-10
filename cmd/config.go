@@ -36,5 +36,4 @@ func ReadConfig(configFilePath string) ([]ui.Workflow, error) {
 	}
 
 	return config.Workflows, nil
-
 }
