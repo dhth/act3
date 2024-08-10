@@ -1,20 +1,19 @@
 package ui
 
 import (
-	"context"
-
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/shurcooL/githubv4"
+	ghapi "github.com/cli/go-gh/v2/pkg/api"
+	ghgql "github.com/cli/shurcooL-graphql"
 )
 
-func getWorkflowRuns(ghClient *githubv4.Client, workflow Workflow) tea.Cmd {
+func getWorkflowRuns(ghClient *ghapi.GraphQLClient, workflow Workflow) tea.Cmd {
 	return func() tea.Msg {
 		variables := map[string]interface{}{
-			"numWorkflowRuns": githubv4.Int(3),
-			"workflowId":      githubv4.ID(workflow.ID),
+			"numWorkflowRuns": ghgql.Int(3),
+			"workflowId":      ghgql.ID(workflow.ID),
 		}
 		var query QueryResult
-		err := ghClient.Query(context.Background(), &query, variables)
+		err := ghClient.Query("GetWorkflows", &query, variables)
 
 		return WorkflowRunsFetchedMsg{workflow, query, err}
 	}

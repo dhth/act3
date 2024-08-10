@@ -2,26 +2,22 @@ package ui
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/shurcooL/githubv4"
 )
 
-type model struct {
-	workflows          []Workflow
-	ghClient           *githubv4.Client
+type Model struct {
+	config             Config
 	workFlowResults    map[string]workflowRunResults
 	numResults         int
-	outputFmt          OutputFmt
 	message            string
-	htmlTemplate       string
 	errors             []error
 	failedWorkflowURLs map[string]string
 	outputPrinted      bool
 }
 
-func (m model) Init() tea.Cmd {
-	var cmds []tea.Cmd
-	for _, workflow := range m.workflows {
-		cmds = append(cmds, getWorkflowRuns(m.ghClient, workflow))
+func (m Model) Init() tea.Cmd {
+	cmds := make([]tea.Cmd, len(m.config.Workflows))
+	for i, workflow := range m.config.Workflows {
+		cmds[i] = getWorkflowRuns(m.config.GHClient, workflow)
 	}
 	return tea.Batch(cmds...)
 }

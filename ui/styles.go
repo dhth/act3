@@ -3,33 +3,39 @@ package ui
 import "github.com/charmbracelet/lipgloss"
 
 const (
-	BACKGROUND_COLOR   = "#282828"
-	HEADER_COLOR       = "#fe8019"
-	RUN_NUMBER_COLOR   = "#83a598"
-	WORKFLOW_COLOR     = "#d3869b"
-	SUCCESS_COLOR      = "#b8bb26"
-	FAILURE_COLOR      = "#fb4934"
-	ERROR_COLOR        = "#fabd2f"
-	ERROR_DETAIL_COLOR = "#665c54"
-	CONTEXT_COLOR      = "#665c54"
+	bgColor          = "#282828"
+	headerColor      = "#fe8019"
+	runNumberColor   = "#83a598"
+	workflowColor    = "#d3869b"
+	successColor     = "#b8bb26"
+	failureColor     = "#fb4934"
+	errorColor       = "#fabd2f"
+	errorDetailColor = "#665c54"
+	contextColor     = "#665c54"
+	currentRepoColor = "#b8bb26"
 )
 
 var (
 	fgStyle = lipgloss.NewStyle().
 		PaddingLeft(1).
 		PaddingRight(1).
-		Foreground(lipgloss.Color(BACKGROUND_COLOR))
+		Foreground(lipgloss.Color(bgColor))
 
 	headerStyle = fgStyle.
 			Align(lipgloss.Center).
 			Bold(true).
-			Background(lipgloss.Color(HEADER_COLOR))
+			Background(lipgloss.Color(headerColor))
+
+	currentRepoStyle = fgStyle.
+				PaddingLeft(1).
+				Bold(true).
+				Foreground(lipgloss.Color(currentRepoColor))
 
 	runNumberStyle = fgStyle.
 			Align(lipgloss.Center).
 			Bold(true).
-			Background(lipgloss.Color(RUN_NUMBER_COLOR)).
-			Width(RUN_NUMBER_WIDTH)
+			Background(lipgloss.Color(runNumberColor)).
+			Width(runNumberWidth)
 
 	nonFgStyle = lipgloss.NewStyle().
 			PaddingLeft(1).
@@ -38,36 +44,36 @@ var (
 	workflowStyle = nonFgStyle.
 			Align(lipgloss.Left).
 			Bold(true).
-			Foreground(lipgloss.Color(WORKFLOW_COLOR)).
-			Width(WORKFLOW_NAME_WIDTH)
+			Foreground(lipgloss.Color(workflowColor)).
+			Width(workflowNameWidth + 4)
 
 	runResultStyle = nonFgStyle.
-			PaddingLeft((RUN_NUMBER_WIDTH - 20) / 2). // TODO: This is a clumsy hack; make it better
-			Width(RUN_NUMBER_WIDTH + 4)
+			PaddingLeft((runNumberWidth - 20) / 2). // TODO: This is a clumsy hack; make it better
+			Width(runNumberWidth + 4)
 
 	successTextStyle = lipgloss.NewStyle().
 				Bold(true).
-				Foreground(lipgloss.Color(SUCCESS_COLOR))
+				Foreground(lipgloss.Color(successColor))
 
 	failureTextStyle = lipgloss.NewStyle().
 				Bold(true).
-				Foreground(lipgloss.Color(FAILURE_COLOR))
+				Foreground(lipgloss.Color(failureColor))
 
 	errorTextStyle = lipgloss.NewStyle().
 			Bold(true).
-			Foreground(lipgloss.Color(ERROR_COLOR))
+			Foreground(lipgloss.Color(errorColor))
 
 	faintStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color(CONTEXT_COLOR))
+			Foreground(lipgloss.Color(contextColor))
 
 	failureHeadingStyle = nonFgStyle.
 				Bold(true).
-				Foreground(lipgloss.Color(FAILURE_COLOR))
+				Foreground(lipgloss.Color(failureColor))
 
 	errorHeadingStyle = nonFgStyle.
 				Bold(true).
-				Foreground(lipgloss.Color(ERROR_COLOR))
+				Foreground(lipgloss.Color(errorColor))
 
 	errorDetailStyle = nonFgStyle.
-				Foreground(lipgloss.Color(ERROR_DETAIL_COLOR))
+				Foreground(lipgloss.Color(errorDetailColor))
 )

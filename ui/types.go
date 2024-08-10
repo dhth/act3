@@ -7,13 +7,13 @@ type Workflow struct {
 	Repo string  `yaml:"repo"`
 	Name string  `yaml:"name"`
 	Key  *string `yaml:"key"`
-	Url  *string `yaml:"url"`
+	URL  *string `yaml:"url"`
 }
 
 type WorkflowRunNodesResult struct {
-	Id         string
+	ID         string
 	RunNumber  int
-	Url        string
+	URL        string
 	CreatedAt  githubv4.DateTime
 	CheckSuite struct {
 		Conclusion string
@@ -22,14 +22,14 @@ type WorkflowRunNodesResult struct {
 
 type WorkflowResult struct {
 	Name string
-	Id   string
+	ID   string
 	Runs struct {
 		Nodes []WorkflowRunNodesResult
 	} `graphql:"runs(first: $numWorkflowRuns)"`
 }
 
 type NodeResult struct {
-	Id       string
+	ID       string
 	Workflow WorkflowResult `graphql:"... on Workflow"`
 }
 
@@ -59,7 +59,7 @@ type htmlRunDetails struct {
 
 type htmlWorkflowResult struct {
 	Details htmlRunDetails
-	Url     string
+	URL     string
 	Success bool
 	Error   bool
 }
@@ -70,10 +70,11 @@ type htmlDataRow struct {
 }
 
 type htmlData struct {
-	Title     string
-	Columns   []string
-	Rows      []htmlDataRow
-	Failures  map[string]string
-	Errors    *[]error
-	Timestamp string
+	Title       string
+	CurrentRepo *string
+	Columns     []string
+	Rows        []htmlDataRow
+	Failures    map[string]string
+	Errors      *[]error
+	Timestamp   string
 }

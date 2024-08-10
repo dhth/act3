@@ -71,18 +71,18 @@ workflows:
 
 `{{runNumber}}` gets replaced with the actual run number of the workflow.
 
-You can find the ID for your workflow as follows:
+You can find the ID for a workflow as follows:
 
 ```bash
 curl -L \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer <YOUR_GH_TOKEN>" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://api.github.com/repos/<OWNER>/<REPO>/actions/workflows/<WORKFLOW_FILE>
+  https://api.github.com/repos/<OWNER>/<REPO>/actions/workflows
 
 # or
 
-gh api repos/<OWNER>/<REPO>/actions/workflows/<WORKFLOW_FILE>
+gh api repos/<OWNER>/<REPO>/actions/workflows
 
 # use node_id from the response
 ```

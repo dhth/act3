@@ -6,8 +6,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -30,18 +29,18 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					} else {
 						workflowRunKey = fmt.Sprintf("%s:%s", msg.workflow.Repo, msg.workflow.Name)
 					}
-					m.failedWorkflowURLs[fmt.Sprintf("%s #%2d", workflowRunKey, result.RunNumber)] = result.Url
+					m.failedWorkflowURLs[fmt.Sprintf("%s #%2d", workflowRunKey, result.RunNumber)] = result.URL
 				}
 			}
 			m.workFlowResults[msg.workflow.ID] = workflowRunResults{results: msg.query.Workflow.Runs.Nodes}
 		}
-		m.numResults += 1
-		if m.numResults >= len(m.workflows) {
+		m.numResults++
+		if m.numResults >= len(m.config.Workflows) {
 			return m, quitProg()
 		}
 	case quitProgMsg:
 		if !m.outputPrinted {
-			switch m.outputFmt {
+			switch m.config.Fmt {
 			case HTMLFmt:
 				v := m.renderHTML()
 				fmt.Print(v)
