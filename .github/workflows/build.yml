@@ -61,11 +61,6 @@ jobs:
         private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
     - name: go build
       run: go build .
-    - name: Test run
-      run: |
-        ./act3
-      env:
-        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
     - name: Generate HTML output
       run: |
         ./act3 \
