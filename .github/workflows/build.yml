@@ -60,7 +60,7 @@ jobs:
         app-id: ${{ vars.GH_TOKEN_APP_ID }}
         private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
     - name: go build
-      run: go build -v ./...
+      run: go build .
     - name: Test run
       run: |
         ./act3
