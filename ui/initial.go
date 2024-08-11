@@ -7,11 +7,11 @@ func InitialModel(config Config) Model {
 	failedWorkflowRunURLs := make(map[string]string)
 
 	m := Model{
-		config:             config,
-		workFlowResults:    workflowResults,
-		message:            "hello",
-		errors:             errors,
-		failedWorkflowURLs: failedWorkflowRunURLs,
+		config:                 config,
+		workFlowResults:        workflowResults,
+		message:                "hello",
+		errors:                 errors,
+		nonSuccessWorkflowURLs: failedWorkflowRunURLs,
 	}
 	return m
 }

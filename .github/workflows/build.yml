@@ -25,11 +25,53 @@ jobs:
       uses: actions/setup-go@v5
       with:
         go-version: ${{ env.GO_VERSION }}
-    - name: golangci-lint
-      uses: golangci/golangci-lint-action@v6
-      with:
-        version: v1.58
     - name: go build
       run: go build -v ./...
     - name: go test
       run: go test -v ./...
+
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v6
+      with:
+        version: v1.58
+
+  test-run:
+    name: test-run
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: Generate GH token
+      id: generate-token
+      uses: actions/create-github-app-token@v1
+      with:
+        app-id: ${{ vars.GH_TOKEN_APP_ID }}
+        private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
+    - name: go build
+      run: go build -v ./...
+    - name: Test run
+      run: |
+        ./act3
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+    - name: Generate HTML output
+      run: |
+        ./act3 \
+          -g \
+          -config-file=./examples/html/act3.yml \
+          -format=html \
+          -html-template-file=./examples/html/template.html
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}

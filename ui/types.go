@@ -2,6 +2,10 @@ package ui
 
 import "github.com/shurcooL/githubv4"
 
+const (
+	checkSuiteSuccess = "SUCCESS"
+)
+
 type Workflow struct {
 	ID   string  `yaml:"id"`
 	Repo string  `yaml:"repo"`

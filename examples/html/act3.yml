@@ -33,6 +33,10 @@ workflows:
   repo: dhth/mult
   name: build
 
+- id: W_kwDOMTtucc4GVkAg
+  repo: dhth/omm
+  name: build
+
 - id: W_kwDOLafHJ84FQglT
   repo: dhth/outtasync
   name: build

@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	runNumberWidth    = 30
+	runNumberWidth    = 40
 	workflowNameWidth = 30
-	runNumberPadding  = 6
+	runNumberPadding  = 8
 )
 
 const (
@@ -23,15 +23,10 @@ const (
 	SystemNotFound       = "not found"
 )
 
-var (
-	//go:embed assets/template.html
-	htmlTemplate string
+//go:embed assets/template.html
+var htmlTemplate string
 
-	//go:embed assets/error.html
-	htmlErrorTemplate string
-)
-
-func (m Model) renderHTML() string {
+func (m Model) renderHTML() (string, error) {
 	var columns []string
 	rows := make([]htmlDataRow, len(m.config.Workflows))
 
@@ -73,13 +68,10 @@ func (m Model) renderHTML() string {
 		} else {
 			for _, rr := range workflowResults.results {
 				var resultSignifier string
-				var success bool
-				if rr.CheckSuite.Conclusion == "SUCCESS" {
-					resultSignifier = "✅"
+				success := false
+				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
+				if rr.CheckSuite.Conclusion == checkSuiteSuccess {
 					success = true
-				} else {
-					resultSignifier = "❌"
-					success = false
 				}
 				resultsDate := "(" + rr.CreatedAt.Time.Format("Jan 2") + ")"
 
@@ -114,8 +106,8 @@ func (m Model) renderHTML() string {
 	if len(m.errors) > 0 {
 		data.Errors = &m.errors
 	}
-	if len(m.failedWorkflowURLs) > 0 {
-		data.Failures = m.failedWorkflowURLs
+	if len(m.nonSuccessWorkflowURLs) > 0 {
+		data.Failures = m.nonSuccessWorkflowURLs
 	}
 	data.Timestamp = time.Now().Format("2006-01-02 15:04:05 MST")
 
@@ -127,16 +119,16 @@ func (m Model) renderHTML() string {
 		tmpl, err = template.New("act3").Parse(m.config.HTMLTemplate)
 	}
 	if err != nil {
-		return fmt.Sprintf(htmlErrorTemplate, err.Error())
+		return "", err
 	}
 
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, data)
 	if err != nil {
-		return fmt.Sprintf(htmlErrorTemplate, err.Error())
+		return "", err
 	}
 
-	return buf.String()
+	return buf.String(), nil
 }
 
 func (m Model) View() string {
@@ -182,13 +174,12 @@ func (m Model) View() string {
 		} else {
 			for _, rr := range workflowResults.results {
 				var resultSignifier string
-				if rr.CheckSuite.Conclusion == "SUCCESS" {
-					resultSignifier = "✅"
+				style = nonSuccessTextStyle
+				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
+				if rr.CheckSuite.Conclusion == checkSuiteSuccess {
 					style = successTextStyle
-				} else {
-					resultSignifier = "❌"
-					style = failureTextStyle
 				}
+
 				resultsDate := "(" + humanize.Time(rr.CreatedAt.Time) + ")"
 				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
 					style.Render(RightPadTrim(fmt.Sprintf("#%d", rr.RunNumber), runNumberPadding)),
@@ -200,11 +191,11 @@ func (m Model) View() string {
 		s += "\n"
 	}
 
-	if len(m.failedWorkflowURLs) > 0 {
+	if len(m.nonSuccessWorkflowURLs) > 0 {
 		s += "\n"
-		s += failureHeadingStyle.Render("Failed runs")
+		s += nonSuccessHeadingStyle.Render("Non successful runs")
 		s += "\n"
-		for k, v := range m.failedWorkflowURLs {
+		for k, v := range m.nonSuccessWorkflowURLs {
 			s += errorDetailStyle.Render(fmt.Sprintf("%s%s", RightPadTrim(k, 65), v))
 			s += "\n"
 		}
@@ -220,4 +211,27 @@ func (m Model) View() string {
 		}
 	}
 	return s
+}
+
+func getCheckSuiteIndicator(conclusion string) string {
+	switch conclusion {
+	case "ACTION_REQUIRED":
+		return "🔄"
+	case "TIMED_OUT":
+		return "⏰"
+	case "CANCELLED":
+		return "🚫"
+	case "FAILURE":
+		return "❌"
+	case "SUCCESS":
+		return "✅"
+	case "NEUTRAL":
+		return "😐"
+	case "SKIPPED":
+		return "⏭️"
+	case "STARTUP_FAILURE":
+		return "🛑"
+	default:
+		return "🟡"
+	}
 }

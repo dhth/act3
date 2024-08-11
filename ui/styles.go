@@ -8,7 +8,7 @@ const (
 	runNumberColor   = "#83a598"
 	workflowColor    = "#d3869b"
 	successColor     = "#b8bb26"
-	failureColor     = "#fb4934"
+	nonSuccessColor  = "#fb4934"
 	errorColor       = "#fabd2f"
 	errorDetailColor = "#665c54"
 	contextColor     = "#665c54"
@@ -55,9 +55,9 @@ var (
 				Bold(true).
 				Foreground(lipgloss.Color(successColor))
 
-	failureTextStyle = lipgloss.NewStyle().
+	nonSuccessTextStyle = lipgloss.NewStyle().
 				Bold(true).
-				Foreground(lipgloss.Color(failureColor))
+				Foreground(lipgloss.Color(nonSuccessColor))
 
 	errorTextStyle = lipgloss.NewStyle().
 			Bold(true).
@@ -66,9 +66,9 @@ var (
 	faintStyle = lipgloss.NewStyle().
 			Foreground(lipgloss.Color(contextColor))
 
-	failureHeadingStyle = nonFgStyle.
+	nonSuccessHeadingStyle = nonFgStyle.
 				Bold(true).
-				Foreground(lipgloss.Color(failureColor))
+				Foreground(lipgloss.Color(nonSuccessColor))
 
 	errorHeadingStyle = nonFgStyle.
 				Bold(true).

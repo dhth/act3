@@ -5,13 +5,13 @@ import (
 )
 
 type Model struct {
-	config             Config
-	workFlowResults    map[string]workflowRunResults
-	numResults         int
-	message            string
-	errors             []error
-	failedWorkflowURLs map[string]string
-	outputPrinted      bool
+	config                 Config
+	workFlowResults        map[string]workflowRunResults
+	numResults             int
+	message                string
+	errors                 []error
+	nonSuccessWorkflowURLs map[string]string
+	outputPrinted          bool
 }
 
 func (m Model) Init() tea.Cmd {
