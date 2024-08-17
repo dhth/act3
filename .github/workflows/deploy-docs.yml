@@ -40,7 +40,7 @@ jobs:
           -f html \
           -t ./examples/html/template.html > ./examples/html/docs/index.html
       env:
-        ACT3_GH_ACCESS_TOKEN: ${{ steps.generate-token.outputs.token }}
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
