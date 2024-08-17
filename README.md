@@ -6,7 +6,7 @@
 Glance at the results of the last 3 runs of your Github Actions.
 
 <p align="center">
-  <img src="https://tools.dhruvs.space/images/at3/act3-1.png" alt="Usage" />
+  <img src="https://tools.dhruvs.space/images/act3/act3-1.png" alt="Usage" />
 </p>
 
 💾 Installation
@@ -120,7 +120,7 @@ act3" \
 The resultant HTML page looks like this.
 
 <p align="center">
-  <img src="https://tools.dhruvs.space/images/at3/act3-html-1.png" alt="Usage" />
+  <img src="https://tools.dhruvs.space/images/act3/act3-html-1.png" alt="Usage" />
 </p>
 
 > A sample page generated via `act3` is running at
