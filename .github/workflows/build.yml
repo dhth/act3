@@ -55,8 +55,6 @@ jobs:
         private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
     - name: Generate HTML output
       run: |
-        ./act3 \
-          -f html \
-          -t ./examples/html/template.html
+        ./act3 -f html
       env:
         GH_TOKEN: ${{ steps.generate-token.outputs.token }}
