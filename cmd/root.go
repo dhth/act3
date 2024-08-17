@@ -38,8 +38,8 @@ var (
 )
 
 var (
-	format           = flag.String("format", "", "output format to use; possible values: html")
-	htmlTemplateFile = flag.String("html-template-file", "", "path of the HTML template file to use")
+	format           = flag.String("f", "", "output format to use; possible values: html")
+	htmlTemplateFile = flag.String("t", "", "path of the HTML template file to use")
 	global           = flag.Bool("g", false, "whether to use workflows defined globally via the config file")
 	repo             = flag.String("r", "", "repo to fetch worflows for, in the format \"owner/repo\"")
 )
@@ -59,13 +59,13 @@ func Execute() error {
 	}
 	if configErr != nil {
 		fmt.Printf(`Couldn't get your default config directory. This is a fatal error;
-use --config-file to specify config file path manually.
+use -c to specify config file path manually.
 Let %s know about this via %s.
 `, author, issuesURL)
 		return fmt.Errorf("%w: %s", errCouldntGetConfigDir, configErr.Error())
 	}
 	defaultConfigFilePath := filepath.Join(defaultConfigDir, configPath)
-	configFilePath := flag.String("config-file", defaultConfigFilePath, "path of the config file")
+	configFilePath := flag.String("c", defaultConfigFilePath, "path of the config file")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "%s\n\nFlags:\n", helpText)

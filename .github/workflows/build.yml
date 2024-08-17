@@ -56,7 +56,7 @@ jobs:
     - name: Generate HTML output
       run: |
         ./act3 \
-          -format=html \
-          -html-template-file=./examples/html/template.html
+          -f html \
+          -t ./examples/html/template.html
       env:
         GH_TOKEN: ${{ steps.generate-token.outputs.token }}

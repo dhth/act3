@@ -48,7 +48,6 @@ var (
 			Width(workflowNameWidth + 4)
 
 	runResultStyle = nonFgStyle.
-			PaddingLeft((runNumberWidth - 20) / 2). // TODO: This is a clumsy hack; make it better
 			Width(runNumberWidth + 4)
 
 	successTextStyle = lipgloss.NewStyle().
