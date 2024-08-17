@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  ACT3_VERSION: 0.4.0
+  ACT3_VERSION: 1.0.0
 
 jobs:
   build:
@@ -36,9 +36,9 @@ jobs:
     - name: Generate doc
       run: |
         ./act3 \
-          -config-file=./examples/html/act3.yml \
-          -format=html \
-          -html-template-file=./examples/html/template.html > ./examples/html/docs/index.html
+          -c ./examples/html/act3.yml \
+          -f html \
+          -t ./examples/html/template.html > ./examples/html/docs/index.html
       env:
         ACT3_GH_ACCESS_TOKEN: ${{ steps.generate-token.outputs.token }}
     - name: Upload artifact
