@@ -23,10 +23,12 @@ type htmlRunDetails struct {
 }
 
 type htmlWorkflowResult struct {
-	Details htmlRunDetails
-	URL     string
-	Success bool
-	Error   bool
+	Details    htmlRunDetails
+	URL        string
+	Success    bool
+	Color      string
+	Conclusion string
+	Error      bool
 }
 
 type htmlDataRow struct {

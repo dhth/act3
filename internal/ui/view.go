@@ -9,12 +9,11 @@ import (
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/dhth/act3/internal/gh"
 	humanize "github.com/dustin/go-humanize"
 )
 
 const (
-	runNumberWidth    = 40
+	runNumberWidth    = 36
 	workflowNameWidth = 30
 	runNumberPadding  = 8
 )
@@ -64,16 +63,14 @@ func (m Model) renderHTML() (string, error) {
 					},
 					Success: false,
 					Error:   true,
+					Color:   errorColor,
 				})
 			}
 		} else {
 			for _, rr := range workflowResults.results {
 				var resultSignifier string
-				success := false
+				success := !rr.CheckSuite.IsAFailure()
 				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
-				if rr.CheckSuite.Conclusion == gh.CSConclusionSuccess {
-					success = true
-				}
 				resultsDate := "(" + rr.CreatedAt.Time.Format("Jan 2") + ")"
 
 				var url string
@@ -89,8 +86,10 @@ func (m Model) renderHTML() (string, error) {
 						Indicator:       resultSignifier,
 						Context:         resultsDate,
 					},
-					Success: success,
-					URL:     url,
+					Success:    success,
+					URL:        url,
+					Conclusion: rr.CheckSuite.Conclusion,
+					Color:      getCheckRunColor(rr.CheckSuite.Conclusion),
 				},
 				)
 
@@ -175,11 +174,8 @@ func (m Model) View() string {
 		} else {
 			for _, rr := range workflowResults.results {
 				var resultSignifier string
-				style = nonSuccessTextStyle
+				style = getResultStyle(rr.CheckSuite.Conclusion)
 				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
-				if rr.CheckSuite.Conclusion == gh.CSConclusionSuccess {
-					style = successTextStyle
-				}
 
 				resultsDate := "(" + humanize.Time(rr.CreatedAt.Time) + ")"
 				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
