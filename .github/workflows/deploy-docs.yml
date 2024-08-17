@@ -36,15 +36,14 @@ jobs:
     - name: Generate doc
       run: |
         ./act3 \
-          -c ./examples/html/act3.yml \
-          -f html \
-          -t ./examples/html/template.html > ./examples/html/docs/index.html
+          -r neovim/neovim \
+          -f html > ./.github/static/index.html
       env:
         GH_TOKEN: ${{ steps.generate-token.outputs.token }}
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
-        path: ./examples/html/docs
+        path: ./.github/static
 
   deploy:
     environment:

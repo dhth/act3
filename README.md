@@ -108,13 +108,15 @@ gh api repos/<OWNER>/<REPO>/actions/workflows
 
 ### HTML output
 
-`act3` can also output the results in HTML format. You can also specify a
-template using the `-t` flag.
+`act3` can also output results in HTML format. You can also specify a template
+using the `-t` flag (refer to
+[./internal/ui/assets/template.html](./internal/ui/assets/template.html) for the
+default template.)
 
 ```bash
 act3" \
     -f html \
-    -t ./examples/html/template.html
+    -t path/to/template/file.html
 ```
 
 The resultant HTML page looks like this.
@@ -124,10 +126,7 @@ The resultant HTML page looks like this.
 </p>
 
 > A sample page generated via `act3` is running at
-> [https://dhth.github.io/act3](https://dhth.github.io/act3), the source code
-> for which is in the
-> [examples/html](https://github.com/dhth/act3/tree/main/examples/html)
-> directory.
+> [https://dhth.github.io/act3](https://dhth.github.io/act3).
 
 🔐 Verifying release artifacts
 ---
