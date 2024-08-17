@@ -5,12 +5,12 @@ import (
 	"os/user"
 	"strings"
 
-	"github.com/dhth/act3/ui"
+	"github.com/dhth/act3/internal/gh"
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
-	Workflows []ui.Workflow `yaml:"workflows"`
+	Workflows []gh.Workflow `yaml:"workflows"`
 }
 
 func expandTilde(path string) string {
@@ -24,7 +24,7 @@ func expandTilde(path string) string {
 	return path
 }
 
-func ReadConfig(configFilePath string) ([]ui.Workflow, error) {
+func ReadConfig(configFilePath string) ([]gh.Workflow, error) {
 	localFile, err := os.ReadFile(expandTilde(configFilePath))
 	if err != nil {
 		return nil, err
@@ -36,5 +36,4 @@ func ReadConfig(configFilePath string) ([]ui.Workflow, error) {
 	}
 
 	return config.Workflows, nil
-
 }

@@ -4,3 +4,4 @@ cosign.key
 cosign.pub
 justfile
 examples/html/docs/sample.html
+.cmds

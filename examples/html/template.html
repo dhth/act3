@@ -32,8 +32,8 @@
                             </td>
                         {{else if .Success}}
                             <td class="px-4 py-2 font-mono">
-                                {{if .Url}}
-                                <a class="no-underline" href="{{.Url}}" target="_blank">
+                                {{if .URL}}
+                                <a class="no-underline" href="{{.URL}}" target="_blank">
                                     <p class="font-bold inline text-[#b8bb26]">{{.Details.NumberFormatted}}</p>
                                     <p class="inline text-[#b8bb26]">{{.Details.Indicator}}</p>
                                     <p class="px-1 inline italic text-[#7c6f64]">{{.Details.Context}}</p>
@@ -46,8 +46,8 @@
                             </td>
                         {{else}}
                             <td class="px-4 py-2 font-mono">
-                                {{if .Url}}
-                                <a class="no-underline" href="{{.Url}}" target="_blank">
+                                {{if .URL}}
+                                <a class="no-underline" href="{{.URL}}" target="_blank">
                                     <p class="font-bold inline text-[#fb4934]">{{.Details.NumberFormatted}}</p>
                                     <p class="inline text-[#fb4934]">{{.Details.Indicator}}</p>
                                     <p class="px-1 inline italic text-[#7c6f64]">{{.Details.Context}}</p>
@@ -69,7 +69,7 @@
         <br>
         <hr>
         <br>
-        <p class="text-[#fb4934] font-bold italic">Failed Runs</p>
+        <p class="text-[#fb4934] font-bold italic">Non Successful Runs</p>
             <br>
         <table class="table-auto text-left">
             {{range $key, $value := .Failures -}}

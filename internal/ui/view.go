@@ -2,19 +2,20 @@ package ui
 
 import (
 	"bytes"
+	_ "embed"
 	"fmt"
+	"html/template"
 	"strings"
 	"time"
-
-	"html/template"
 
 	"github.com/charmbracelet/lipgloss"
 	humanize "github.com/dustin/go-humanize"
 )
 
 const (
-	RUN_NUMBER_WIDTH    = 30
-	WORKFLOW_NAME_WIDTH = 30
+	runNumberWidth    = 36
+	workflowNameWidth = 30
+	runNumberPadding  = 8
 )
 
 const (
@@ -22,25 +23,32 @@ const (
 	SystemNotFound       = "not found"
 )
 
-func (m model) renderHTML() string {
+//go:embed assets/template.html
+var htmlTemplate string
 
+func (m Model) renderHTML() (string, error) {
 	var columns []string
-	var rows []htmlDataRow
+	rows := make([]htmlDataRow, len(m.config.Workflows))
 
 	data := htmlData{
-		Title: "act3",
+		Title:       "act3",
+		CurrentRepo: m.config.CurrentRepo,
 	}
 
 	columns = append(columns, "workflow")
 	columns = append(columns, []string{"last", "2nd last", "3rd last"}...)
 
-	for _, workflow := range m.workflows {
+	for i, workflow := range m.config.Workflows {
 
 		var workflowKey string
 		if workflow.Key != nil {
 			workflowKey = *workflow.Key
 		} else {
-			workflowKey = fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name)
+			if m.config.CurrentRepo != nil {
+				workflowKey = workflow.Name
+			} else {
+				workflowKey = fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name)
+			}
 		}
 
 		var data []htmlWorkflowResult
@@ -55,27 +63,21 @@ func (m model) renderHTML() string {
 					},
 					Success: false,
 					Error:   true,
+					Color:   errorColor,
 				})
 			}
-
 		} else {
 			for _, rr := range workflowResults.results {
 				var resultSignifier string
-				var success bool
-				if rr.CheckSuite.Conclusion == "SUCCESS" {
-					resultSignifier = "✅"
-					success = true
-				} else {
-					resultSignifier = "❌"
-					success = false
-				}
-				var resultsDate = "(" + rr.CreatedAt.Time.Format("Jan 2") + ")"
+				success := !rr.CheckSuite.IsAFailure()
+				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
+				resultsDate := "(" + rr.CreatedAt.Time.Format("Jan 2") + ")"
 
 				var url string
-				if workflow.Url != nil {
-					url = strings.Replace(*workflow.Url, "{{runNumber}}", fmt.Sprintf("%d", rr.RunNumber), -1)
+				if workflow.URL != nil {
+					url = strings.Replace(*workflow.URL, "{{runNumber}}", fmt.Sprintf("%d", rr.RunNumber), -1)
 				} else {
-					url = rr.Url
+					url = rr.URL
 				}
 				data = append(data, htmlWorkflowResult{
 					Details: htmlRunDetails{
@@ -84,17 +86,19 @@ func (m model) renderHTML() string {
 						Indicator:       resultSignifier,
 						Context:         resultsDate,
 					},
-					Success: success,
-					Url:     url,
+					Success:    success,
+					URL:        url,
+					Conclusion: rr.CheckSuite.Conclusion,
+					Color:      getCheckRunColor(rr.CheckSuite.Conclusion),
 				},
 				)
 
 			}
 		}
-		rows = append(rows, htmlDataRow{
+		rows[i] = htmlDataRow{
 			Key:  workflowKey,
 			Data: data,
-		})
+		}
 	}
 
 	data.Columns = columns
@@ -102,36 +106,39 @@ func (m model) renderHTML() string {
 	if len(m.errors) > 0 {
 		data.Errors = &m.errors
 	}
-	if len(m.failedWorkflowURLs) > 0 {
-		data.Failures = m.failedWorkflowURLs
+	if len(m.nonSuccessWorkflowURLs) > 0 {
+		data.Failures = m.nonSuccessWorkflowURLs
 	}
 	data.Timestamp = time.Now().Format("2006-01-02 15:04:05 MST")
 
 	var tmpl *template.Template
 	var err error
-	if m.htmlTemplate == "" {
-		tmpl, err = template.New("act3").Parse(HTMLTemplText)
+	if m.config.HTMLTemplate == "" {
+		tmpl, err = template.New("act3").Parse(htmlTemplate)
 	} else {
-		tmpl, err = template.New("act3").Parse(m.htmlTemplate)
+		tmpl, err = template.New("act3").Parse(m.config.HTMLTemplate)
 	}
 	if err != nil {
-		return fmt.Sprintf(string(errorTemplate), err.Error())
+		return "", err
 	}
 
 	var buf bytes.Buffer
 	err = tmpl.Execute(&buf, data)
 	if err != nil {
-		return fmt.Sprintf(string(errorTemplate), err.Error())
+		return "", err
 	}
 
-	return buf.String()
+	return buf.String(), nil
 }
 
-func (m model) View() string {
+func (m Model) View() string {
 	var s string
 
 	s += "\n"
 	s += " " + headerStyle.Render("act3")
+	if m.config.CurrentRepo != nil {
+		s += currentRepoStyle.Render(*m.config.CurrentRepo)
+	}
 	s += "\n\n"
 
 	s += workflowStyle.Render("workflow")
@@ -143,11 +150,17 @@ func (m model) View() string {
 
 	s += "\n\n"
 	var style lipgloss.Style
-	for _, workflow := range m.workflows {
+	for _, workflow := range m.config.Workflows {
 		if workflow.Key != nil {
-			s += workflowStyle.Render(RightPadTrim(*workflow.Key, WORKFLOW_NAME_WIDTH))
+			s += workflowStyle.Render(RightPadTrim(*workflow.Key, workflowNameWidth))
 		} else {
-			s += workflowStyle.Render(RightPadTrim(fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name), WORKFLOW_NAME_WIDTH))
+			var wf string
+			if m.config.CurrentRepo != nil {
+				wf = workflow.Name
+			} else {
+				wf = fmt.Sprintf("%s:%s", workflow.Repo, workflow.Name)
+			}
+			s += workflowStyle.Render(RightPadTrim(wf, workflowNameWidth))
 		}
 		workflowResults := m.workFlowResults[workflow.ID]
 		if workflowResults.err != nil {
@@ -159,19 +172,14 @@ func (m model) View() string {
 				))
 			}
 		} else {
-
 			for _, rr := range workflowResults.results {
 				var resultSignifier string
-				if rr.CheckSuite.Conclusion == "SUCCESS" {
-					resultSignifier = "✅"
-					style = successTextStyle
-				} else {
-					resultSignifier = "❌"
-					style = failureTextStyle
-				}
-				var resultsDate = "(" + humanize.Time(rr.CreatedAt.Time) + ")"
+				style = getResultStyle(rr.CheckSuite.Conclusion)
+				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
+
+				resultsDate := "(" + humanize.Time(rr.CreatedAt.Time) + ")"
 				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
-					style.Render(fmt.Sprintf("#%2d", rr.RunNumber)),
+					style.Render(RightPadTrim(fmt.Sprintf("#%d", rr.RunNumber), runNumberPadding)),
 					resultSignifier,
 					faintStyle.Render(resultsDate),
 				))
@@ -180,11 +188,11 @@ func (m model) View() string {
 		s += "\n"
 	}
 
-	if len(m.failedWorkflowURLs) > 0 {
+	if len(m.nonSuccessWorkflowURLs) > 0 {
 		s += "\n"
-		s += failureHeadingStyle.Render("Failed runs")
+		s += nonSuccessHeadingStyle.Render("Non successful runs")
 		s += "\n"
-		for k, v := range m.failedWorkflowURLs {
+		for k, v := range m.nonSuccessWorkflowURLs {
 			s += errorDetailStyle.Render(fmt.Sprintf("%s%s", RightPadTrim(k, 65), v))
 			s += "\n"
 		}
