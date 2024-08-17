@@ -30,31 +30,17 @@
                                 <p class="inline text-[#fabd2f]">{{.Details.Indicator}}</p>
                                 <p class="px-1 inline italic text-[#fabd2f]">{{.Details.Context}}</p>
                             </td>
-                        {{else if .Success}}
-                            <td class="px-4 py-2 font-mono">
-                                {{if .URL}}
-                                <a class="no-underline" href="{{.URL}}" target="_blank">
-                                    <p class="font-bold inline text-[#b8bb26]">{{.Details.NumberFormatted}}</p>
-                                    <p class="inline text-[#b8bb26]">{{.Details.Indicator}}</p>
-                                    <p class="px-1 inline italic text-[#7c6f64]">{{.Details.Context}}</p>
-                                </a>
-                                {{else}}
-                                <p class="font-bold inline text-[#b8bb26]">{{.Details.NumberFormatted}}</p>
-                                <p class="inline text-[#b8bb26]">{{.Details.Indicator}}</p>
-                                <p class="px-1 inline italic text-[#7c6f64]">{{.Details.Context}}</p>
-                                {{end}}
-                            </td>
                         {{else}}
                             <td class="px-4 py-2 font-mono">
                                 {{if .URL}}
                                 <a class="no-underline" href="{{.URL}}" target="_blank">
-                                    <p class="font-bold inline text-[#fb4934]">{{.Details.NumberFormatted}}</p>
-                                    <p class="inline text-[#fb4934]">{{.Details.Indicator}}</p>
+                                    <p class="font-bold inline text-[{{.Color}}]">{{.Details.NumberFormatted}}</p>
+                                    <p class="inline text-[{{.Color}}]">{{.Details.Indicator}}</p>
                                     <p class="px-1 inline italic text-[#7c6f64]">{{.Details.Context}}</p>
                                 </a>
                                 {{else}}
-                                <p class="font-bold inline text-[#fb4934]">{{.Details.NumberFormatted}}</p>
-                                <p class="inline text-[#fb4934]">{{.Details.Indicator}}</p>
+                                <p class="font-bold inline text-[{{.Color}}]">{{.Details.NumberFormatted}}</p>
+                                <p class="inline text-[{{.Color}}]">{{.Details.Indicator}}</p>
                                 <p class="px-1 inline italic text-[#7c6f64]">{{.Details.Context}}</p>
                                 {{end}}
                             </td>
