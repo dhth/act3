@@ -1,8 +1,10 @@
 package ui
 
+import "github.com/dhth/act3/internal/gh"
+
 type WorkflowRunsFetchedMsg struct {
-	workflow Workflow
-	query    QueryResult
+	workflow gh.Workflow
+	query    gh.QueryResult
 	err      error
 }
 

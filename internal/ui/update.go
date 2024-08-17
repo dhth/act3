@@ -23,15 +23,15 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		} else {
 			m.workFlowResults[msg.workflow.ID] = workflowRunResults{results: msg.query.Workflow.Runs.Nodes, err: msg.err, errorIndex: len(m.errors)}
 			for _, result := range msg.query.NodeResult.Workflow.Runs.Nodes {
-				if result.CheckSuite.Conclusion != checkSuiteSuccess {
+				if result.CheckSuite.IsAFailure() {
 					indicator := getCheckSuiteIndicator(result.CheckSuite.Conclusion)
-					var workflowRunKey string
+					var failedWorkflowRunKey string
 					if msg.workflow.Key != nil {
-						workflowRunKey = fmt.Sprintf("%s %s", *msg.workflow.Key, indicator)
+						failedWorkflowRunKey = fmt.Sprintf("%s %s", *msg.workflow.Key, indicator)
 					} else {
-						workflowRunKey = fmt.Sprintf("%s: %s", msg.workflow.Repo, msg.workflow.Name)
+						failedWorkflowRunKey = fmt.Sprintf("%s: %s", msg.workflow.Repo, msg.workflow.Name)
 					}
-					m.nonSuccessWorkflowURLs[fmt.Sprintf("%s #%2d", workflowRunKey, result.RunNumber)] = result.URL
+					m.nonSuccessWorkflowURLs[fmt.Sprintf("%s #%2d", failedWorkflowRunKey, result.RunNumber)] = result.URL
 				}
 			}
 			m.workFlowResults[msg.workflow.ID] = workflowRunResults{results: msg.query.Workflow.Runs.Nodes}

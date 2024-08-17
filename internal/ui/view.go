@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/dhth/act3/internal/gh"
 	humanize "github.com/dustin/go-humanize"
 )
 
@@ -70,7 +71,7 @@ func (m Model) renderHTML() (string, error) {
 				var resultSignifier string
 				success := false
 				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
-				if rr.CheckSuite.Conclusion == checkSuiteSuccess {
+				if rr.CheckSuite.Conclusion == gh.CSConclusionSuccess {
 					success = true
 				}
 				resultsDate := "(" + rr.CreatedAt.Time.Format("Jan 2") + ")"
@@ -176,7 +177,7 @@ func (m Model) View() string {
 				var resultSignifier string
 				style = nonSuccessTextStyle
 				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
-				if rr.CheckSuite.Conclusion == checkSuiteSuccess {
+				if rr.CheckSuite.Conclusion == gh.CSConclusionSuccess {
 					style = successTextStyle
 				}
 
@@ -211,27 +212,4 @@ func (m Model) View() string {
 		}
 	}
 	return s
-}
-
-func getCheckSuiteIndicator(conclusion string) string {
-	switch conclusion {
-	case "ACTION_REQUIRED":
-		return "🔄"
-	case "TIMED_OUT":
-		return "⏰"
-	case "CANCELLED":
-		return "🚫"
-	case "FAILURE":
-		return "❌"
-	case "SUCCESS":
-		return "✅"
-	case "NEUTRAL":
-		return "😐"
-	case "SKIPPED":
-		return "⏭️"
-	case "STARTUP_FAILURE":
-		return "🛑"
-	default:
-		return "🟡"
-	}
 }

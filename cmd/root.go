@@ -11,7 +11,8 @@ import (
 	"time"
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
-	"github.com/dhth/act3/ui"
+	"github.com/dhth/act3/internal/gh"
+	"github.com/dhth/act3/internal/ui"
 )
 
 const (
@@ -117,7 +118,7 @@ Let %s know about this via %s.
 		CacheTTL:    time.Second * 30,
 		Timeout:     8 * time.Second,
 	}
-	var workflows []ui.Workflow
+	var workflows []gh.Workflow
 	var currentRepo string
 	var err error
 
