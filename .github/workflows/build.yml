@@ -65,3 +65,7 @@ jobs:
       run: ./act3 -f html
       env:
         GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+    - name: Test step
+      run: |
+        ACT3_VERSION=$(curl -s https://api.github.com/repos/dhth/act3/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
+        echo "latest version is $ACT3_VERSION"
