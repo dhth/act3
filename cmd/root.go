@@ -37,7 +37,7 @@ var (
 )
 
 var (
-	format           = flag.String("f", "", "output format to use; possible values: default, plaintext, html")
+	format           = flag.String("f", "", "output format to use; possible values: default, table, html")
 	htmlTemplateFile = flag.String("t", "", "path of the HTML template file to use")
 	global           = flag.Bool("g", false, "whether to use workflows defined globally via the config file")
 	repo             = flag.String("r", "", "repo to fetch worflows for, in the format \"owner/repo\"")
@@ -92,6 +92,8 @@ Let %s know about this via %s.
 	var outputFmt types.OutputFmt
 	if *format != "" {
 		switch *format {
+		case "default":
+			outputFmt = types.DefaultFmt
 		case "table":
 			outputFmt = types.TableFmt
 		case "html":
