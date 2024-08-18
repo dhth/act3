@@ -9,6 +9,7 @@ import (
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
 	"github.com/dhth/act3/internal/gh"
+	"github.com/dhth/act3/internal/types"
 	"github.com/go-git/go-git/v5"
 )
 
@@ -20,15 +21,15 @@ var (
 	errCouldntParseRemoteURL = errors.New("couldn't parse remote URL")
 )
 
-func getWorkflowsForCurrentRepo(ghClient *ghapi.RESTClient, repo string) ([]gh.Workflow, error) {
+func getWorkflowsForCurrentRepo(ghClient *ghapi.RESTClient, repo string) ([]types.Workflow, error) {
 	wd, err := gh.GetWorkflowDetails(ghClient, repo)
 	if err != nil {
 		return nil, err
 	}
 
-	workflows := make([]gh.Workflow, len(wd.Workflows))
+	workflows := make([]types.Workflow, len(wd.Workflows))
 	for i, w := range wd.Workflows {
-		workflows[i] = gh.Workflow{
+		workflows[i] = types.Workflow{
 			ID:   w.NodeID,
 			Repo: repo,
 			Name: w.Name,

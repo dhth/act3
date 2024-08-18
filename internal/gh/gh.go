@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
+	ghgql "github.com/cli/shurcooL-graphql"
+	"github.com/dhth/act3/internal/types"
 	"github.com/shurcooL/githubv4"
 )
 
@@ -19,14 +21,6 @@ const (
 	CSConclusionSuccess        = "SUCCESS"
 	CSConclusionTimedOut       = "TIMED_OUT"
 )
-
-type Workflow struct {
-	ID   string  `yaml:"id"`
-	Repo string  `yaml:"repo"`
-	Name string  `yaml:"name"`
-	Key  *string `yaml:"key"`
-	URL  *string `yaml:"url"`
-}
 
 type CheckSuite struct {
 	Conclusion string
@@ -81,5 +75,25 @@ func (cs CheckSuite) IsAFailure() bool {
 		return true
 	default:
 		return false
+	}
+}
+
+type ResultData struct {
+	Workflow types.Workflow
+	Result   QueryResult
+	Err      error
+}
+
+func GetWorkflowRuns(ghClient *ghapi.GraphQLClient, workflow types.Workflow) ResultData {
+	variables := map[string]interface{}{
+		"numWorkflowRuns": ghgql.Int(3),
+		"workflowId":      ghgql.ID(workflow.ID),
+	}
+	var query QueryResult
+	err := ghClient.Query("GetWorkflows", &query, variables)
+	return ResultData{
+		Workflow: workflow,
+		Result:   query,
+		Err:      err,
 	}
 }
