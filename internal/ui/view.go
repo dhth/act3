@@ -15,10 +15,9 @@ import (
 )
 
 const (
-	runNumberWidth    = 36
-	workflowNameWidth = 30
-	runNumberPadding  = 8
-	dateFormat        = "Jan 2"
+	runNumberWidth   = 32
+	runNumberPadding = 8
+	dateFormat       = "Jan 01"
 )
 
 const (
@@ -65,15 +64,13 @@ func getTabularOutput(config types.Config, results []gh.ResultData) string {
 
 				resultsDate := "(" + rr.CreatedAt.Time.Format(dateFormat) + ")"
 				var conclusion string
-				if rr.CheckSuite.Status != gh.CSStateCompleted {
-					conclusion = rr.CheckSuite.Status
-				} else {
-					conclusion = rr.CheckSuite.Conclusion
+				if !rr.CheckSuite.FinishedSuccessfully() {
+					conclusion = fmt.Sprintf("  %s", rr.CheckSuite.ConclusionOrState())
 				}
-				row = append(row, fmt.Sprintf("#%d%s%s",
-					rr.RunNumber,
-					fmt.Sprintf(" %s ", conclusion),
+				row = append(row, fmt.Sprintf("%s%s%s",
+					RightPadTrim(fmt.Sprintf("%d", rr.RunNumber), runNumberPadding),
 					resultsDate,
+					conclusion,
 				))
 			}
 		}
@@ -121,7 +118,7 @@ func getTerminalOutput(config types.Config, results []gh.ResultData) string {
 
 	for _, data := range results {
 		if data.Workflow.Key != nil {
-			s += workflowStyle.Render(RightPadTrim(*data.Workflow.Key, workflowNameWidth))
+			s += workflowStyle.Render(RightPadTrim(*data.Workflow.Key, runNumberWidth))
 		} else {
 			var wf string
 			if config.CurrentRepo != nil {
@@ -129,7 +126,7 @@ func getTerminalOutput(config types.Config, results []gh.ResultData) string {
 			} else {
 				wf = fmt.Sprintf("%s:%s", data.Workflow.Repo, data.Workflow.Name)
 			}
-			s += workflowStyle.Render(RightPadTrim(wf, workflowNameWidth))
+			s += workflowStyle.Render(RightPadTrim(wf, runNumberWidth))
 		}
 		if data.Err != nil {
 			for i := 0; i < 3; i++ {
@@ -143,12 +140,7 @@ func getTerminalOutput(config types.Config, results []gh.ResultData) string {
 			errorIndex++
 		} else {
 			for _, rr := range data.Result.NodeResult.Workflow.Runs.Nodes {
-				var indicator string
-				if rr.CheckSuite.Status != gh.CSStateCompleted {
-					indicator = getCheckSuiteStateIndicator(rr.CheckSuite.Status)
-				} else {
-					indicator = getCheckSuiteConclusionIndicator(rr.CheckSuite.Conclusion)
-				}
+				indicator := getCheckSuiteIndicator(rr.CheckSuite)
 				if !rr.CheckSuite.FinishedSuccessfully() {
 					var failedWorkflowRunKey string
 					if data.Workflow.Key != nil {
@@ -263,12 +255,7 @@ func getHTMLOutput(config types.Config, results []gh.ResultData) (string, error)
 				}
 
 				success := !rr.CheckSuite.IsAFailure()
-				var indicator string
-				if rr.CheckSuite.Status != gh.CSStateCompleted {
-					indicator = getCheckSuiteStateIndicator(rr.CheckSuite.Status)
-				} else {
-					indicator = getCheckSuiteConclusionIndicator(rr.CheckSuite.Conclusion)
-				}
+				indicator := getCheckSuiteIndicator(rr.CheckSuite)
 				resultsDate := "(" + rr.CreatedAt.Time.Format(dateFormat) + ")"
 
 				var url string

@@ -26,6 +26,13 @@ func Trim(s string, length int) string {
 	return s
 }
 
+func getCheckSuiteIndicator(checkSuite gh.CheckSuite) string {
+	if checkSuite.Status != gh.CSStateCompleted {
+		return getCheckSuiteStateIndicator(checkSuite.Status)
+	}
+	return getCheckSuiteConclusionIndicator(checkSuite.Conclusion)
+}
+
 func getCheckSuiteStateIndicator(state string) string {
 	switch state {
 	case gh.CSStateRequested:

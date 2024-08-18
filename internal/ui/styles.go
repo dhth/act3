@@ -52,7 +52,7 @@ var (
 			Align(lipgloss.Left).
 			Bold(true).
 			Foreground(lipgloss.Color(workflowColor)).
-			Width(workflowNameWidth + 4)
+			Width(runNumberWidth + 4)
 
 	runResultStyle = nonFgStyle.
 			Width(runNumberWidth + 4)
