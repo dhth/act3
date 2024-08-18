@@ -57,13 +57,13 @@
         <br>
         <hr>
         <br>
-        <p class="text-[#fb4934] font-bold italic">Non Successful Runs</p>
+        <p class="text-[#fb4934] font-bold">Non Successful Runs</p>
             <br>
         <table class="table-auto text-left">
             {{range $key, $value := .Failures -}}
                 <tr>
-                    <td class="text-[#a89984] italic px-2 py-1">{{$key}}</td>
-                    <td class="text-[#a89984] italic px-2 py-1"><a class="underline" href="{{$value}}" target="_blank">{{$value}}</a></td>
+                    <td class="text-[#a89984] px-2 py-1">{{$key}}</td>
+                    <td class="text-[#a89984] px-2 py-1"><a class="underline" href="{{$value}}" target="_blank">{{$value}}</a></td>
                 </tr>
             {{end -}}
         </table>
@@ -73,13 +73,13 @@
         <br>
         <hr>
         <br>
-        <p class="text-[#fabd2f] font-bold italic">Errors</p>
+        <p class="text-[#fabd2f] font-bold">Errors</p>
             <br>
         <table class="table-auto text-left">
             {{range $index, $error := .Errors -}}
                 <tr>
-                    <td class="text-[#a89984] italic px-2 py-1">{{$index}}</td>
-                    <td class="text-[#a89984] italic px-2 py-1">{{$error}}</td>
+                    <td class="text-[#a89984] px-2 py-1">{{$index}}</td>
+                    <td class="text-[#a89984] px-2 py-1">{{$error}}</td>
                 </tr>
             {{end -}}
         </table>

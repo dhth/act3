@@ -26,7 +26,24 @@ func Trim(s string, length int) string {
 	return s
 }
 
-func getCheckSuiteIndicator(conclusion string) string {
+func getCheckSuiteStateIndicator(state string) string {
+	switch state {
+	case gh.CSStateRequested:
+		return "🙏"
+	case gh.CSStateQueued:
+		return "⏯"
+	case gh.CSStateInProgress:
+		return "⏳"
+	case gh.CSStateWaiting:
+		return "🔜"
+	case gh.CSStatePending:
+		return "🟡"
+	default:
+		return ""
+	}
+}
+
+func getCheckSuiteConclusionIndicator(conclusion string) string {
 	switch conclusion {
 	case gh.CSConclusionActionReq:
 		return "🔄"

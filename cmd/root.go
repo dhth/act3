@@ -11,8 +11,7 @@ import (
 	"time"
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
-	"github.com/dhth/act3/internal/gh"
-	"github.com/dhth/act3/internal/ui"
+	"github.com/dhth/act3/internal/types"
 )
 
 const (
@@ -38,7 +37,7 @@ var (
 )
 
 var (
-	format           = flag.String("f", "", "output format to use; possible values: html")
+	format           = flag.String("f", "", "output format to use; possible values: default, plaintext, html")
 	htmlTemplateFile = flag.String("t", "", "path of the HTML template file to use")
 	global           = flag.Bool("g", false, "whether to use workflows defined globally via the config file")
 	repo             = flag.String("r", "", "repo to fetch worflows for, in the format \"owner/repo\"")
@@ -90,11 +89,13 @@ Let %s know about this via %s.
 		}
 	}
 
-	var outputFmt ui.OutputFmt
+	var outputFmt types.OutputFmt
 	if *format != "" {
 		switch *format {
+		case "table":
+			outputFmt = types.TableFmt
 		case "html":
-			outputFmt = ui.HTMLFmt
+			outputFmt = types.HTMLFmt
 		default:
 			return fmt.Errorf("%w", errIncorrectOutputFmt)
 		}
@@ -118,7 +119,7 @@ Let %s know about this via %s.
 		CacheTTL:    time.Second * 30,
 		Timeout:     8 * time.Second,
 	}
-	var workflows []gh.Workflow
+	var workflows []types.Workflow
 	var currentRepo string
 	var err error
 
@@ -169,14 +170,16 @@ Let %s know about this via %s.
 	if !*global {
 		cr = &currentRepo
 	}
-	config := ui.Config{
+	config := types.Config{
 		GHClient:     ghClient,
-		Workflows:    workflows,
 		CurrentRepo:  cr,
 		Fmt:          outputFmt,
 		HTMLTemplate: htmlTemplate,
 	}
 
-	ui.RenderUI(config)
+	err = render(workflows, config)
+	if err != nil {
+		return err
+	}
 	return nil
 }

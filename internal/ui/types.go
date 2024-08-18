@@ -1,20 +1,5 @@
 package ui
 
-import "github.com/dhth/act3/internal/gh"
-
-type OutputFmt uint
-
-const (
-	UnspecifiedFmt OutputFmt = iota
-	HTMLFmt
-)
-
-type workflowRunResults struct {
-	results    []gh.WorkflowRunNodesResult
-	err        error
-	errorIndex int
-}
-
 type htmlRunDetails struct {
 	NumberFormatted string
 	RunNumber       string
