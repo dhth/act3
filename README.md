@@ -106,6 +106,18 @@ gh api repos/<OWNER>/<REPO>/actions/workflows
 # use node_id from the response
 ```
 
+### Tabular output
+
+`act3` can also output results in a tabular format.
+
+```bash
+act3 -f table
+```
+
+<p align="center">
+  <img src="https://tools.dhruvs.space/images/act3/act3-2.png" alt="Usage" />
+</p>
+
 ### HTML output
 
 `act3` can also output results in HTML format. You can also specify a template
@@ -114,9 +126,7 @@ using the `-t` flag (refer to
 default template.)
 
 ```bash
-act3" \
-    -f html \
-    -t path/to/template/file.html
+act3 -f html
 ```
 
 The resultant HTML page looks like this.
@@ -136,21 +146,21 @@ verify its authenticity. Checksums are applied to all released artifacts, and
 the resulting checksum file is signed using
 [cosign](https://docs.sigstore.dev/cosign/installation/).
 
-Steps to verify (replace the version in the commands listed with the one you
-want):
+Steps to verify (replace `x.y.z` in the commands listed below with the version
+you want):
 
 1. Download the following files from the release:
 
-   - act3_1.0.0_checksums.txt
-   - act3_1.0.0_checksums.txt.pem
-   - act3_1.0.0_checksums.txt.sig
+   - act3_x.y.z_checksums.txt
+   - act3_x.y.z_checksums.txt.pem
+   - act3_x.y.z_checksums.txt.sig
 
 2. Verify the signature:
 
    ```shell
-   cosign verify-blob act3_1.0.0_checksums.txt \
-       --certificate act3_1.0.0_checksums.txt.pem \
-       --signature act3_1.0.0_checksums.txt.sig \
+   cosign verify-blob act3_x.y.z_checksums.txt \
+       --certificate act3_x.y.z_checksums.txt.pem \
+       --signature act3_x.y.z_checksums.txt.sig \
        --certificate-identity-regexp 'https://github\.com/dhth/act3/\.github/workflows/.+' \
        --certificate-oidc-issuer "https://token.actions.githubusercontent.com"
    ```
@@ -158,14 +168,14 @@ want):
 3. Download the compressed archive you want, and validate its checksum:
 
    ```shell
-   curl -sSLO https://github.com/dhth/act3/releases/download/v1.0.0/act3_1.0.0_linux_amd64.tar.gz
-   sha256sum --ignore-missing -c act3_1.0.0_checksums.txt
+   curl -sSLO https://github.com/dhth/act3/releases/download/vx.y.z/act3_x.y.z_linux_amd64.tar.gz
+   sha256sum --ignore-missing -c act3_x.y.z_checksums.txt
    ```
 
 3. If checksum validation goes through, uncompress the archive:
 
    ```shell
-   tar -xzf act3_1.0.0_linux_amd64.tar.gz
+   tar -xzf act3_x.y.z_linux_amd64.tar.gz
    ./act3
    # profit!
    ```
