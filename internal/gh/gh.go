@@ -20,9 +20,17 @@ const (
 	CSConclusionStartupFailure = "STARTUP_FAILURE"
 	CSConclusionSuccess        = "SUCCESS"
 	CSConclusionTimedOut       = "TIMED_OUT"
+
+	CSStateRequested  = "REQUESTED"
+	CSStateQueued     = "QUEUED"
+	CSStateInProgress = "IN_PROGRESS"
+	CSStateCompleted  = "COMPLETED"
+	CSStateWaiting    = "WAITING"
+	CSStatePending    = "PENDING"
 )
 
 type CheckSuite struct {
+	Status     string
 	Conclusion string
 }
 
@@ -76,6 +84,20 @@ func (cs CheckSuite) IsAFailure() bool {
 	default:
 		return false
 	}
+}
+
+func (cs CheckSuite) FinishedSuccessfully() bool {
+	if cs.Status == CSStateCompleted && cs.Conclusion == CSConclusionSuccess {
+		return true
+	}
+	return false
+}
+
+func (cs CheckSuite) ConclusionOrState() string {
+	if cs.Status != CSStateCompleted {
+		return cs.Status
+	}
+	return cs.Conclusion
 }
 
 type ResultData struct {

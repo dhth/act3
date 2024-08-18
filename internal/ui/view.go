@@ -64,9 +64,15 @@ func getTabularOutput(config types.Config, results []gh.ResultData) string {
 			for _, rr := range data.Result.NodeResult.Workflow.Runs.Nodes {
 
 				resultsDate := "(" + rr.CreatedAt.Time.Format(dateFormat) + ")"
-				row = append(row, fmt.Sprintf("#%d %s %s",
+				var conclusion string
+				if rr.CheckSuite.Status != gh.CSStateCompleted {
+					conclusion = rr.CheckSuite.Status
+				} else {
+					conclusion = rr.CheckSuite.Conclusion
+				}
+				row = append(row, fmt.Sprintf("#%d%s%s",
 					rr.RunNumber,
-					rr.CheckSuite.Conclusion,
+					fmt.Sprintf(" %s ", conclusion),
 					resultsDate,
 				))
 			}
@@ -137,26 +143,33 @@ func getTerminalOutput(config types.Config, results []gh.ResultData) string {
 			errorIndex++
 		} else {
 			for _, rr := range data.Result.NodeResult.Workflow.Runs.Nodes {
-				if rr.CheckSuite.IsAFailure() {
-					indicator := getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
+				var indicator string
+				if rr.CheckSuite.Status != gh.CSStateCompleted {
+					indicator = getCheckSuiteStateIndicator(rr.CheckSuite.Status)
+				} else {
+					indicator = getCheckSuiteConclusionIndicator(rr.CheckSuite.Conclusion)
+				}
+				if !rr.CheckSuite.FinishedSuccessfully() {
 					var failedWorkflowRunKey string
 					if data.Workflow.Key != nil {
-						failedWorkflowRunKey = fmt.Sprintf("%s %s", *data.Workflow.Key, indicator)
+						failedWorkflowRunKey = *data.Workflow.Key
 					} else {
-						failedWorkflowRunKey = fmt.Sprintf("%s: %s", data.Workflow.Repo, data.Workflow.Name)
+						if config.CurrentRepo != nil {
+							failedWorkflowRunKey = data.Workflow.Name
+						} else {
+							failedWorkflowRunKey = fmt.Sprintf("%s: %s", data.Workflow.Repo, data.Workflow.Name)
+						}
 					}
-					nonSuccessfulRuns[fmt.Sprintf("%s #%2d", failedWorkflowRunKey, rr.RunNumber)] = rr.URL
+					nonSuccessfulRuns[fmt.Sprintf("%s #%d (%s) ", failedWorkflowRunKey, rr.RunNumber, rr.CheckSuite.ConclusionOrState())] = rr.URL
 					unsuccessfulRuns = true
 				}
 
-				var resultSignifier string
 				style := getResultStyle(rr.CheckSuite.Conclusion)
-				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
 
 				resultsDate := "(" + humanize.Time(rr.CreatedAt.Time) + ")"
 				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
 					style.Render(RightPadTrim(fmt.Sprintf("#%d", rr.RunNumber), runNumberPadding)),
-					resultSignifier,
+					indicator,
 					faintStyle.Render(resultsDate),
 				))
 			}
@@ -234,21 +247,28 @@ func getHTMLOutput(config types.Config, results []gh.ResultData) (string, error)
 			errorIndex++
 		} else {
 			for _, rr := range data.Result.Workflow.Runs.Nodes {
-				if rr.CheckSuite.IsAFailure() {
-					indicator := getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
+				if !rr.CheckSuite.FinishedSuccessfully() {
 					var failedWorkflowRunKey string
 					if data.Workflow.Key != nil {
-						failedWorkflowRunKey = fmt.Sprintf("%s %s", *data.Workflow.Key, indicator)
+						failedWorkflowRunKey = *data.Workflow.Key
 					} else {
-						failedWorkflowRunKey = fmt.Sprintf("%s: %s", data.Workflow.Repo, data.Workflow.Name)
+						if config.CurrentRepo != nil {
+							failedWorkflowRunKey = data.Workflow.Name
+						} else {
+							failedWorkflowRunKey = fmt.Sprintf("%s: %s", data.Workflow.Repo, data.Workflow.Name)
+						}
 					}
-					nonSuccessfulRuns[fmt.Sprintf("%s #%2d", failedWorkflowRunKey, rr.RunNumber)] = rr.URL
+					nonSuccessfulRuns[fmt.Sprintf("%s #%d (%s) ", failedWorkflowRunKey, rr.RunNumber, rr.CheckSuite.ConclusionOrState())] = rr.URL
 					unsuccessfulRuns = true
 				}
 
-				var resultSignifier string
 				success := !rr.CheckSuite.IsAFailure()
-				resultSignifier = getCheckSuiteIndicator(rr.CheckSuite.Conclusion)
+				var indicator string
+				if rr.CheckSuite.Status != gh.CSStateCompleted {
+					indicator = getCheckSuiteStateIndicator(rr.CheckSuite.Status)
+				} else {
+					indicator = getCheckSuiteConclusionIndicator(rr.CheckSuite.Conclusion)
+				}
 				resultsDate := "(" + rr.CreatedAt.Time.Format(dateFormat) + ")"
 
 				var url string
@@ -261,7 +281,7 @@ func getHTMLOutput(config types.Config, results []gh.ResultData) (string, error)
 					Details: htmlRunDetails{
 						NumberFormatted: fmt.Sprintf("#%2d", rr.RunNumber),
 						RunNumber:       fmt.Sprintf("%d", rr.RunNumber),
-						Indicator:       resultSignifier,
+						Indicator:       indicator,
 						Context:         resultsDate,
 					},
 					Success:    success,

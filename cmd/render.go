@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sort"
 
 	"github.com/dhth/act3/internal/gh"
 	"github.com/dhth/act3/internal/types"
@@ -22,6 +23,10 @@ func render(workflows []types.Workflow, config types.Config) error {
 		r := <-resultChannel
 		results[i] = r
 	}
+
+	sort.Slice(results, func(i, j int) bool {
+		return results[i].Workflow.Name < results[j].Workflow.Name
+	})
 
 	output, err := ui.GetOutput(config, results)
 	if err != nil {
