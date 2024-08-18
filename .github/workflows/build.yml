@@ -53,10 +53,15 @@ jobs:
       with:
         app-id: ${{ vars.GH_TOKEN_APP_ID }}
         private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
-    - name: Run act3
-      run: |
-        ./act3
-        ./act3 -f table
-        ./act3 -f html
+    - name: Run act3 with default output
+      run: ./act3
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+    - name: Run act3 with tabular output
+      run: ./act3 -f table
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+    - name: Run act3 with HTML output
+      run: ./act3 -f html
       env:
         GH_TOKEN: ${{ steps.generate-token.outputs.token }}
