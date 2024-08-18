@@ -65,7 +65,7 @@ func getTabularOutput(config types.Config, results []gh.ResultData) string {
 				resultsDate := "(" + rr.CreatedAt.Time.Format(dateFormat) + ")"
 				var conclusion string
 				if !rr.CheckSuite.FinishedSuccessfully() {
-					conclusion = fmt.Sprintf("  %s", rr.CheckSuite.ConclusionOrState())
+					conclusion = fmt.Sprintf("  %s ", rr.CheckSuite.ConclusionOrState())
 				}
 				row = append(row, fmt.Sprintf("%s%s%s",
 					RightPadTrim(fmt.Sprintf("%d", rr.RunNumber), runNumberPadding),
