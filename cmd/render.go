@@ -10,8 +10,9 @@ import (
 )
 
 func render(workflows []types.Workflow, config types.Config) error {
-	results := make([]gh.ResultData, len(workflows))
+	resultsMap := make(map[string]gh.ResultData)
 	resultChannel := make(chan gh.ResultData)
+	var results []gh.ResultData
 
 	for _, wf := range workflows {
 		go func(workflow types.Workflow) {
@@ -19,14 +20,29 @@ func render(workflows []types.Workflow, config types.Config) error {
 		}(wf)
 	}
 
-	for i := range workflows {
+	for range workflows {
 		r := <-resultChannel
-		results[i] = r
+		resultsMap[r.Workflow.ID] = r
 	}
 
-	sort.Slice(results, func(i, j int) bool {
-		return results[i].Workflow.Name < results[j].Workflow.Name
-	})
+	if config.CurrentRepo != nil {
+		var resultsList []gh.ResultData
+		for _, r := range resultsMap {
+			resultsList = append(resultsList, r)
+		}
+		// sort workflows alphabetically
+		sort.Slice(resultsList, func(i, j int) bool {
+			return resultsList[i].Workflow.Name < resultsList[j].Workflow.Name
+		})
+		results = resultsList
+	} else {
+		// sort workflows in the sequence of the config file
+		resultsInConfigDefinedOrder := make([]gh.ResultData, len(workflows))
+		for i, w := range workflows {
+			resultsInConfigDefinedOrder[i] = resultsMap[w.ID]
+		}
+		results = resultsInConfigDefinedOrder
+	}
 
 	output, err := ui.GetOutput(config, results)
 	if err != nil {
