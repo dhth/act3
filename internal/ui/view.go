@@ -17,7 +17,7 @@ import (
 const (
 	runNumberWidth   = 32
 	runNumberPadding = 8
-	dateFormat       = "Jan 01"
+	dateFormat       = "Jan 02"
 )
 
 const (
