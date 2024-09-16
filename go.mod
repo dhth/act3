@@ -4,7 +4,7 @@ go 1.23.0
 
 require (
 	github.com/charmbracelet/lipgloss v0.12.1
-	github.com/cli/go-gh/v2 v2.9.0
+	github.com/cli/go-gh/v2 v2.10.0
 	github.com/cli/shurcooL-graphql v0.0.4
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-git/go-git/v5 v5.12.0
