@@ -117,10 +117,10 @@ Let %s know about this via %s.
 	}
 
 	clientOpts := ghapi.ClientOptions{
-		EnableCache: true,
-		CacheTTL:    time.Second * 30,
+		EnableCache: false,
 		Timeout:     8 * time.Second,
 	}
+
 	var workflows []types.Workflow
 	var currentRepo string
 	var err error
