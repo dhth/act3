@@ -3,7 +3,7 @@ version: '3.8'
 # to test operations on linux
 services:
   act3-dev:
-    image: golang:1.23.0-alpine
+    image: golang:1.23.4-alpine
     volumes:
       - .:/go/src/app
     working_dir: /go/src/app
