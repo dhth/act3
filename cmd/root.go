@@ -37,16 +37,18 @@ var (
 )
 
 var (
-	format           = flag.String("f", "", "output format to use; possible values: default, table, html")
-	htmlTemplateFile = flag.String("t", "", "path of the HTML template file to use")
-	global           = flag.Bool("g", false, "whether to use workflows defined globally via the config file")
-	repo             = flag.String("r", "", "repo to fetch worflows for, in the format \"owner/repo\"")
+	format           = flag.String("f", "", "")
+	htmlTemplateFile = flag.String("t", "", "")
+	global           = flag.Bool("g", false, "")
+	repo             = flag.String("r", "", "")
+	openFailed       = flag.Bool("o", false, "")
 )
 
 func Execute() error {
 	var defaultConfigDir string
 	var configErr error
-	switch runtime.GOOS {
+	goos := runtime.GOOS
+	switch goos {
 	case "linux", "windows":
 		defaultConfigDir, configErr = os.UserConfigDir()
 	default:
@@ -67,8 +69,7 @@ Let %s know about this via %s.
 	configFilePath := flag.String("c", defaultConfigFilePath, "path of the config file")
 
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "%s\n\nFlags:\n", helpText)
-		flag.PrintDefaults()
+		fmt.Fprint(os.Stderr, getHelp(defaultConfigFilePath))
 	}
 
 	flag.Parse()
@@ -179,9 +180,15 @@ Let %s know about this via %s.
 		HTMLTemplate: htmlTemplate,
 	}
 
-	err = render(workflows, config)
+	results := getResults(workflows, config)
+
+	err = render(results, config)
 	if err != nil {
 		return err
+	}
+
+	if *openFailed {
+		openFailedWorkflows(results, goos)
 	}
 	return nil
 }
