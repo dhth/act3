@@ -1,7 +1,9 @@
 # act3
 
-✨ Overview
----
+[![Build Workflow Status](https://img.shields.io/github/actions/workflow/status/dhth/act3/build.yml?style=flat-square)](https://github.com/dhth/act3/actions/workflows/build.yml)
+[![Vulncheck Workflow Status](https://img.shields.io/github/actions/workflow/status/dhth/act3/vulncheck.yml?style=flat-square&label=vulncheck)](https://github.com/dhth/act3/actions/workflows/vulncheck.yml)
+[![Latest Release](https://img.shields.io/github/release/dhth/act3.svg?style=flat-square)](https://github.com/dhth/act3/releases/latest)
+[![Commits Since Latest Release](https://img.shields.io/github/commits-since/dhth/act3/latest?style=flat-square)](https://github.com/dhth/act3/releases)
 
 Glance at the results of the last 3 runs of your Github Actions.
 
@@ -24,7 +26,7 @@ brew install dhth/tap/act3
 go install github.com/dhth/act3@latest
 ```
 
-Or get the binaries directly from a [release][2]. Read more about verifying the
+Or get the binary directly from a [release][2]. Read more about verifying the
 authenticity of released artifacts [here](#-verifying-release-artifacts).
 
 🔑 Authentication
