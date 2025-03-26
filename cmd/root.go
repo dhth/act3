@@ -22,6 +22,7 @@ const (
 )
 
 var (
+	errCouldntGetHomeDir       = errors.New("couldn't get home directory")
 	errFlagCombIncorrect       = errors.New("flag combination incorrect")
 	errIncorrectRepoProvided   = errors.New("incorrect repo provided")
 	errCouldntGetConfigDir     = errors.New("couldn't get your config directory")
@@ -47,17 +48,21 @@ var (
 func Execute() error {
 	var defaultConfigDir string
 	var configErr error
+
+	var err error
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		return fmt.Errorf("%w: %s", errCouldntGetHomeDir, err.Error())
+	}
+
 	goos := runtime.GOOS
 	switch goos {
 	case "linux", "windows":
 		defaultConfigDir, configErr = os.UserConfigDir()
 	default:
-		hd, configErr := os.UserHomeDir()
-		if configErr != nil {
-			break
-		}
-		defaultConfigDir = filepath.Join(hd, ".config")
+		defaultConfigDir = filepath.Join(userHomeDir, ".config")
 	}
+
 	if configErr != nil {
 		fmt.Printf(`Couldn't get your default config directory. This is a fatal error;
 use -c to specify config file path manually.
@@ -124,20 +129,20 @@ Let %s know about this via %s.
 
 	var workflows []types.Workflow
 	var currentRepo string
-	var err error
 
 	if *global {
-		configFilePathExpanded := expandTilde(*configFilePath)
+		configFilePathExpanded := expandTilde(*configFilePath, userHomeDir)
 
-		_, err = os.Stat(configFilePathExpanded)
-		if os.IsNotExist(err) {
+		var cfgErr error
+		_, cfgErr = os.Stat(configFilePathExpanded)
+		if os.IsNotExist(cfgErr) {
 			return fmt.Errorf("%w: path: %s", errConfigFileDoesntExit, configFilePathExpanded)
 		}
 
-		workflows, err = ReadConfig(configFilePathExpanded)
-		if err != nil {
+		workflows, cfgErr = ReadConfig(configFilePathExpanded, userHomeDir)
+		if cfgErr != nil {
 			fmt.Print(configSampleFormat)
-			return fmt.Errorf("%w: %s", errCouldntReadConfig, err.Error())
+			return fmt.Errorf("%w: %s", errCouldntReadConfig, cfgErr.Error())
 		}
 
 	} else {
