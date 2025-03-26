@@ -55,7 +55,7 @@ Flags:
   -c string                       path of the config file (default "/Users/user/.config/act3/act3.yml")
   -f string                       output format to use; possible values: default, table, html (default "default")
   -t string                       path of the HTML template file to use
-  -r string                       repo to fetch worflows for, in the format "owner/repo"
+  -r string                       repo to fetch workflows for, in the format "owner/repo"
   -g bool                         whether to use workflows defined globally via the config file (default false)
   -o bool                         whether to open failed workflows (via your OS's "open" command) (default false)
   -h, --help                      help for act3
