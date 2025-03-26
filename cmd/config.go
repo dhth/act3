@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"os"
-	"os/user"
+	"path/filepath"
 	"strings"
 
 	"github.com/dhth/act3/internal/types"
@@ -13,19 +13,16 @@ type Config struct {
 	Workflows []types.Workflow `yaml:"workflows"`
 }
 
-func expandTilde(path string) string {
-	if strings.HasPrefix(path, "~") {
-		usr, err := user.Current()
-		if err != nil {
-			os.Exit(1)
-		}
-		return strings.Replace(path, "~", usr.HomeDir, 1)
+func expandTilde(path string, homeDir string) string {
+	pathWithoutTilde, found := strings.CutPrefix(path, "~/")
+	if !found {
+		return path
 	}
-	return path
+	return filepath.Join(homeDir, pathWithoutTilde)
 }
 
-func ReadConfig(configFilePath string) ([]types.Workflow, error) {
-	localFile, err := os.ReadFile(expandTilde(configFilePath))
+func ReadConfig(configFilePath, userHomeDir string) ([]types.Workflow, error) {
+	localFile, err := os.ReadFile(expandTilde(configFilePath, userHomeDir))
 	if err != nil {
 		return nil, err
 	}

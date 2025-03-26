@@ -56,13 +56,13 @@ func getTabularOutput(config types.Config, results []gh.ResultData) string {
 			row = append(row, wf)
 		}
 		if data.Err != nil {
-			for i := 0; i < 3; i++ {
+			for range 3 {
 				row = append(row, "ERROR")
 			}
 		} else {
-			for _, rr := range data.Result.NodeResult.Workflow.Runs.Nodes {
+			for _, rr := range data.Result.Workflow.Runs.Nodes {
 
-				resultsDate := "(" + rr.CreatedAt.Time.Format(dateFormat) + ")"
+				resultsDate := "(" + rr.CreatedAt.Format(dateFormat) + ")"
 				var conclusion string
 				if !rr.CheckSuite.FinishedSuccessfully() {
 					conclusion = fmt.Sprintf(" %s", rr.CheckSuite.ConclusionOrState())
@@ -129,7 +129,7 @@ func getTerminalOutput(config types.Config, results []gh.ResultData) string {
 			s += workflowStyle.Render(RightPadTrim(wf, runNumberWidth))
 		}
 		if data.Err != nil {
-			for i := 0; i < 3; i++ {
+			for range 3 {
 				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
 					errorTextStyle.Render(RightPadTrim(fmt.Sprintf("#%d", errorIndex+1), runNumberPadding)),
 					"😵",
@@ -139,7 +139,7 @@ func getTerminalOutput(config types.Config, results []gh.ResultData) string {
 			errors = append(errors, data.Err)
 			errorIndex++
 		} else {
-			for _, rr := range data.Result.NodeResult.Workflow.Runs.Nodes {
+			for _, rr := range data.Result.Workflow.Runs.Nodes {
 				indicator := getCheckSuiteIndicator(rr.CheckSuite)
 				if !rr.CheckSuite.FinishedSuccessfully() {
 					var failedWorkflowRunKey string
@@ -223,7 +223,7 @@ func getHTMLOutput(config types.Config, results []gh.ResultData) (string, error)
 
 		var resultData []htmlWorkflowResult
 		if data.Err != nil {
-			for i := 0; i < 3; i++ {
+			for range 3 {
 				resultData = append(resultData, htmlWorkflowResult{
 					Details: htmlRunDetails{
 						NumberFormatted: fmt.Sprintf("#%2d", errorIndex),
@@ -256,11 +256,11 @@ func getHTMLOutput(config types.Config, results []gh.ResultData) (string, error)
 
 				success := !rr.CheckSuite.IsAFailure()
 				indicator := getCheckSuiteIndicator(rr.CheckSuite)
-				resultsDate := "(" + rr.CreatedAt.Time.Format(dateFormat) + ")"
+				resultsDate := "(" + rr.CreatedAt.Format(dateFormat) + ")"
 
 				var url string
 				if data.Workflow.URL != nil {
-					url = strings.Replace(*data.Workflow.URL, "{{runNumber}}", fmt.Sprintf("%d", rr.RunNumber), -1)
+					url = strings.ReplaceAll(*data.Workflow.URL, "{{runNumber}}", fmt.Sprintf("%d", rr.RunNumber))
 				} else {
 					url = rr.URL
 				}

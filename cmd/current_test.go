@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestExtractRepoName(t *testing.T) {
@@ -82,7 +83,7 @@ func TestExtractRepoName(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := extractRepoName(tt.input)
 			if tt.err == nil {
-				assert.NoError(t, err)
+				require.NoError(t, err)
 				assert.Equal(t, tt.expected, got)
 			} else {
 				assert.ErrorIs(t, err, tt.err)
