@@ -20,6 +20,12 @@ Glance at the results of the last 3 runs of your Github Actions.
 brew install dhth/tap/act3
 ```
 
+**[X-CMD](https://x-cmd.com)**
+
+```sh
+x install act3
+```
+
 **go**:
 
 ```sh
