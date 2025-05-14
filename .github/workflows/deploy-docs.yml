@@ -28,13 +28,12 @@ jobs:
       - name: Get tailwind
         run: |
           curl \
-            -sSLO \
+            -sSL \
+            -o tailwindcss \
             https://github.com/tailwindlabs/tailwindcss/releases/download/v${{ env.TAILWIND_VERSION }}/tailwindcss-linux-x64-musl
-          mv tailwindcss-linux-x64-musl tailwindcss
-          chmod +x tailwindcss
           ls -1a
-          mv tailwindcss "$HOME/.local/bin"
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          chmod +x tailwindcss
+          mv tailwindcss /usr/local/bin/tailwindcss
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
