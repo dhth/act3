@@ -3,6 +3,11 @@ name: run
 on:
   push:
     branches: ["main"]
+  pull_request:
+    paths:
+      - "go.*"
+      - "**/*.go"
+      - ".github/workflows/run.yml"
 
 permissions:
   contents: read
@@ -27,7 +32,7 @@ jobs:
         run: go build .
       - name: Generate GH token
         id: generate-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ vars.GH_TOKEN_APP_ID }}
           private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
