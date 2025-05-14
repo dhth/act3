@@ -28,7 +28,7 @@ jobs:
       - name: Get tailwind
         run: |
           curl \
-            -sSL \
+            -sSLO \
             https://github.com/tailwindlabs/tailwindcss/releases/download/v${{ env.TAILWIND_VERSION }}/tailwindcss-linux-x64-musl
           mv tailwindcss-linux-x64-musl tailwindcss
           chmod +x tailwindcss
