@@ -20,7 +20,7 @@ env:
   TAILWIND_VERSION: 4.1.6
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,7 +32,7 @@ jobs:
       - name: Get tailwind
         run: |
           curl \
-            -sSLO \
+            -sSL \
             -o tailwindcss \
             https://github.com/tailwindlabs/tailwindcss/releases/download/v${{ env.TAILWIND_VERSION }}/tailwindcss-linux-x64-musl
       - name: Install act3
