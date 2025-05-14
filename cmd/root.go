@@ -38,11 +38,12 @@ var (
 )
 
 var (
-	format           = flag.String("f", "", "")
-	htmlTemplateFile = flag.String("t", "", "")
-	global           = flag.Bool("g", false, "")
-	repo             = flag.String("r", "", "")
-	openFailed       = flag.Bool("o", false, "")
+	format           = flag.String("f", "default", "output format to use; possible values: default, table, html")
+	htmlTemplateFile = flag.String("t", "", "path of the HTML template file to use")
+	htmlTitle        = flag.String("html-title", "act3", "title to use in the HTML output")
+	global           = flag.Bool("g", false, "whether to use workflows defined globally via the config file")
+	repo             = flag.String("r", "", `repo to fetch workflows for, in the format "owner/repo"`)
+	openFailed       = flag.Bool("o", false, `whether to open failed workflows`)
 )
 
 func Execute() error {
@@ -74,7 +75,8 @@ Let %s know about this via %s.
 	configFilePath := flag.String("c", defaultConfigFilePath, "path of the config file")
 
 	flag.Usage = func() {
-		fmt.Fprint(os.Stderr, getHelp(defaultConfigFilePath))
+		fmt.Fprintln(os.Stderr, "Glance at the last 3 runs of your Github Actions")
+		flag.PrintDefaults()
 	}
 
 	flag.Parse()
@@ -183,6 +185,7 @@ Let %s know about this via %s.
 		CurrentRepo:  cr,
 		Fmt:          outputFmt,
 		HTMLTemplate: htmlTemplate,
+		HTMLTitle:    *htmlTitle,
 	}
 
 	results := getResults(workflows, config)

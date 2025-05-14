@@ -16,6 +16,7 @@ type Config struct {
 	GHClient     *ghapi.GraphQLClient
 	CurrentRepo  *string
 	Fmt          OutputFmt
+	HTMLTitle    string
 	HTMLTemplate string
 }
 
