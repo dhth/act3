@@ -29,9 +29,12 @@ jobs:
         run: |
           curl \
             -sSL \
-            -o tailwindcss \
             https://github.com/tailwindlabs/tailwindcss/releases/download/v${{ env.TAILWIND_VERSION }}/tailwindcss-linux-x64-musl
-          chmod +x ./tailwindcss
+          mv tailwindcss-linux-x64-musl tailwindcss
+          chmod +x tailwindcss
+          ls -1a
+          mv tailwindcss "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
@@ -54,9 +57,10 @@ jobs:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
       - name: Generate css
         run: |
-          ./tailwindcss \
-            -i .github/showcase/assets/index.css \
-            -o .github/showcase/assets/act3.css \
+          cd ./.github/showcase/assets
+          tailwindcss \
+            -i index.css \
+            -o act3.css \
       - name: Copy assets to dist
         run: |
           mkdir -p dist
