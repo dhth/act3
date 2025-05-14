@@ -25,16 +25,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: ${{ env.GO_VERSION }}
       - name: Get tailwind
         run: |
           curl \
             -sSL \
             -o tailwindcss \
             https://github.com/tailwindlabs/tailwindcss/releases/download/v${{ env.TAILWIND_VERSION }}/tailwindcss-linux-x64-musl
+          chmod +x ./tailwindcss
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
       - name: Install act3
         run: go install .
       - name: Generate GH token
