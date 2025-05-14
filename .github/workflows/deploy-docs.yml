@@ -30,7 +30,7 @@ jobs:
           curl \
             -sSL \
             -o tailwindcss \
-            https://github.com/tailwindlabs/tailwindcss/releases/download/v${{ env.TAILWIND_VERSION }}/tailwindcss-linux-x64-musl
+            https://github.com/tailwindlabs/tailwindcss/releases/download/v${{ env.TAILWIND_VERSION }}/tailwindcss-linux-x64
           chmod +x tailwindcss
           mv tailwindcss /usr/local/bin/tailwindcss
       - name: Set up Go
