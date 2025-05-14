@@ -5,3 +5,6 @@ cosign.pub
 justfile
 examples/html/docs/sample.html
 .cmds
+dist
+.github/showcase/assets/act3.css
+.github/showcase/assets/index.html

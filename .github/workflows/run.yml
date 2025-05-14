@@ -2,7 +2,12 @@ name: run
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
+  pull_request:
+    paths:
+      - "go.*"
+      - "**/*.go"
+      - ".github/workflows/run.yml"
 
 permissions:
   contents: read
@@ -18,28 +23,28 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - name: go build
-      run: go build .
-    - name: Generate GH token
-      id: generate-token
-      uses: actions/create-github-app-token@v1
-      with:
-        app-id: ${{ vars.GH_TOKEN_APP_ID }}
-        private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
-    - name: Run act3 with default output
-      run: ./act3
-      env:
-        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-    - name: Run act3 with tabular output
-      run: ./act3 -f table
-      env:
-        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-    - name: Run act3 with HTML output
-      run: ./act3 -f html
-      env:
-        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: go build
+        run: go build .
+      - name: Generate GH token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.GH_TOKEN_APP_ID }}
+          private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
+      - name: Run act3 with default output
+        run: ./act3
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Run act3 with tabular output
+        run: ./act3 -f table
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Run act3 with HTML output
+        run: ./act3 -f html
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}

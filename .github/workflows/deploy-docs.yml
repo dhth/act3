@@ -4,6 +4,7 @@ on:
   schedule:
     - cron: "0 6 * * *"
   workflow_dispatch:
+  pull_request:
 
 permissions:
   contents: read
@@ -14,42 +15,40 @@ concurrency:
   group: "pages"
   cancel-in-progress: false
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Download act3
-      run: |
-        LATEST_VERSION=$(curl -s https://api.github.com/repos/dhth/act3/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | sed 's/^v//')
-        curl -s -OL https://github.com/dhth/act3/releases/download/v${LATEST_VERSION}/act3_${LATEST_VERSION}_linux_amd64.tar.gz
-        tar -xzvf act3_${LATEST_VERSION}_linux_amd64.tar.gz
-    - name: Generate GH token
-      id: generate-token
-      uses: actions/create-github-app-token@v1
-      with:
-        app-id: ${{ vars.GH_TOKEN_APP_ID }}
-        private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
-    - name: Generate doc
-      run: |
-        ./act3 \
-          -r neovim/neovim \
-          -f html > ./.github/static/index.html
-      env:
-        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: ./.github/static
+env:
+  GO_VERSION: 1.24.3
 
+jobs:
   deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - run: go build .
+      - name: Generate GH token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.GH_TOKEN_APP_ID }}
+          private-key: ${{ secrets.GH_TOKEN_APP_PRIVATE_KEY }}
+      - run: mkdir dist
+      - name: Generate doc
+        run: |
+          ./act3 \
+            -r neovim/neovim \
+            -f html > dist/index.html
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

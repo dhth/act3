@@ -197,7 +197,7 @@ func getHTMLOutput(config types.Config, results []gh.ResultData) (string, error)
 	rows := make([]htmlDataRow, len(results))
 
 	hData := htmlData{
-		Title:       "act3",
+		Title:       config.HTMLTitle,
 		CurrentRepo: config.CurrentRepo,
 	}
 
