@@ -1,0 +1,105 @@
+workflows:
+
+- id: W_kwDOLkC0eM4FaKV_
+  repo: dhth/act3
+  name: build
+
+- id: W_kwDON4qJ1M4Iknkc
+  repo: dhth/bmm
+  name: buil
+
+- id: W_kwDOOk2Ess4JisRx
+  repo: dhth/chronotes
+  name: build
+
+- id: W_kwDOLvB80c4Fmr3Y
+  repo: dhth/commits
+  name: build
+
+- id: W_kwDOLb3Pms4FRxjX
+  repo: dhth/cueitup
+  name: build
+
+- id: W_kwDOLqVZts4FhIc3
+  repo: dhth/dstll
+  name: build
+
+- id: W_kwDOOChY484Iyc_v
+  repo: dhth/ecscope
+  name: build
+
+- id: W_kwDOLghtl84FWTlZ
+  repo: dhth/ecsv
+  name: build
+
+- id: W_kwDOOh1Jh84JeyxY
+  repo: dhth/ghx
+  name: build-gleam
+
+- id: W_kwDOOh1Jh84JeyxZ
+  repo: dhth/ghx
+  name: build-rust
+
+- id: W_kwDOMG_5As4GEdgo
+  repo: dhth/hours
+  name: build
+
+- id: W_kwDOLa0twM4FRynm
+  repo: dhth/kplay
+  name: build
+
+- id: W_kwDOOu3ogM4JwheW
+  repo: dhth/mrj
+  name: build
+
+- id: W_kwDOL0-ubM4FuRN3
+  repo: dhth/mult
+  name: build
+
+- id: W_kwDOLafHJ84FQglT
+  repo: dhth/outtasync
+  name: build
+
+- id: W_kwDOLnOhHM4FdsSJ
+  repo: dhth/prs
+  name: build
+
+- id: W_kwDOLe-lJM4FUlXo
+  repo: dhth/punchout
+  name: build
+
+- id: W_kwDOLe-lJM4FVCrl
+  repo: dhth/punchout
+  name: release
+
+- id: W_kwDOLjRZQ84FZMD2
+  repo: dhth/schemas
+  name: build
+
+- id: W_kwDONfFcSM4H-0Mr
+  repo: dhth/shfl
+  name: build
+
+- id: W_kwDOM1h8ms4HFJyk
+  repo: dhth/squidge
+  name: build
+
+- id: W_kwDONnFxls4IJ12j
+  repo: dhth/squish
+  name: build
+
+- id: W_kwDON18Fhs4Igiag
+  repo: dhth/tash
+  name: build
+
+- id: W_kwDOMnT5Os4GyHDI
+  repo: dhth/tbll
+  name: build
+
+- id: W_kwDOMgkK1c4GovBh
+  repo: dhth/tomo
+  name: build
+
+- id: W_kwDOODKhOM4Izhxv
+  repo: dhth/urll
+  name: build

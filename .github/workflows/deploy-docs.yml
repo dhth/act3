@@ -10,10 +10,6 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
-
 env:
   GO_VERSION: 1.24.3
 
@@ -38,7 +34,8 @@ jobs:
       - name: Generate doc
         run: |
           ./act3 \
-            -r neovim/neovim \
+            -g \
+            -c ./.github/act3.yml \
             -f html > dist/index.html
         env:
           GH_TOKEN: ${{ steps.generate-token.outputs.token }}
