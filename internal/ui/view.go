@@ -3,6 +3,7 @@ package ui
 import (
 	"bytes"
 	_ "embed"
+	"errors"
 	"fmt"
 	"html/template"
 	"strings"
@@ -12,6 +13,8 @@ import (
 	"github.com/dhth/act3/internal/types"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/renderer"
+	"github.com/olekukonko/tablewriter/tw"
 )
 
 const (
@@ -25,13 +28,18 @@ const (
 	SystemNotFound       = "not found"
 )
 
+var (
+	errCouldntRenderTable = errors.New("couldn't render table")
+	ErrCouldntRenderHTML  = errors.New("couldn't render HTML")
+)
+
 //go:embed assets/template.html
 var htmlTemplate string
 
 func GetOutput(config types.Config, results []gh.ResultData) (string, error) {
 	switch config.Fmt {
 	case types.TableFmt:
-		return getTabularOutput(config, results), nil
+		return getTabularOutput(config, results)
 	case types.HTMLFmt:
 		return getHTMLOutput(config, results)
 	default:
@@ -39,7 +47,7 @@ func GetOutput(config types.Config, results []gh.ResultData) (string, error) {
 	}
 }
 
-func getTabularOutput(config types.Config, results []gh.ResultData) string {
+func getTabularOutput(config types.Config, results []gh.ResultData) (string, error) {
 	rows := make([][]string, len(results))
 
 	for i, data := range results {
@@ -77,19 +85,38 @@ func getTabularOutput(config types.Config, results []gh.ResultData) string {
 		rows[i] = row
 	}
 
-	b := bytes.Buffer{}
-	table := tablewriter.NewWriter(&b)
-
 	headers := []string{"workflow", "last", "2nd-last", "3rd-last"}
-	table.SetHeader(headers)
+	b := bytes.Buffer{}
 
-	table.SetAutoWrapText(false)
-	table.SetAutoFormatHeaders(false)
-	table.AppendBulk(rows)
+	table := tablewriter.NewTable(&b,
+		tablewriter.WithConfig(tablewriter.Config{
+			Header: tw.CellConfig{
+				Formatting: tw.CellFormatting{
+					Alignment:  tw.AlignCenter,
+					AutoWrap:   tw.WrapNone,
+					AutoFormat: tw.Off,
+				},
+			},
+			Row: tw.CellConfig{
+				Formatting: tw.CellFormatting{
+					Alignment: tw.AlignLeft,
+					AutoWrap:  tw.WrapNone,
+				},
+			},
+		}),
+		tablewriter.WithRenderer(renderer.NewBlueprint(tw.Rendition{Symbols: tw.NewSymbols(tw.StyleASCII)})),
+		tablewriter.WithHeader(headers),
+	)
 
-	table.Render()
+	if err := table.Bulk(rows); err != nil {
+		return "", fmt.Errorf("%w: %w", errCouldntRenderTable, err)
+	}
 
-	return b.String()
+	if err := table.Render(); err != nil {
+		return "", fmt.Errorf("%w: %s", errCouldntRenderTable, err.Error())
+	}
+
+	return b.String(), nil
 }
 
 func getTerminalOutput(config types.Config, results []gh.ResultData) string {
