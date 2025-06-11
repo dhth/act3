@@ -20,6 +20,8 @@ jobs:
       workflows: ${{ steps.filter.outputs.workflows }}
       yml: ${{ steps.filter.outputs.yml }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filter
         with:
