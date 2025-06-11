@@ -33,13 +33,13 @@ jobs:
               - "go.*"
               - "main.go"
               - "**/*.go"
-              - ".github/workflows/pr.yml"
+              - ".github/workflows/ci.yml"
             workflows:
               - '.github/workflows/**.yml'
             yml:
               - '**.yml'
               - '**.yaml'
-              - ".github/workflows/pr.yml"
+              - ".github/workflows/ci.yml"
 
   build:
     needs: changes
@@ -110,7 +110,7 @@ jobs:
 
   run:
     needs: changes
-    if: ${{ github.actor != 'dependabot[bot]' && needs.changes.outputs.workflows == 'true' }}
+    if: ${{ github.actor != 'dependabot[bot]' && needs.changes.outputs.code == 'true' }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
