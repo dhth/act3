@@ -2,24 +2,39 @@ package cmd
 
 import (
 	"sort"
+	"sync"
 
 	"github.com/dhth/act3/internal/gh"
 	"github.com/dhth/act3/internal/types"
 )
 
+const maxConcurrentFetches = 50
+
 func getResults(workflows []types.Workflow, config types.Config) []gh.ResultData {
+	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultsMap := make(map[string]gh.ResultData)
 	resultChannel := make(chan gh.ResultData)
+	var wg sync.WaitGroup
 	var results []gh.ResultData
 
 	for _, wf := range workflows {
+		wg.Add(1)
 		go func(workflow types.Workflow) {
+			defer wg.Done()
+			defer func() {
+				<-semaphore
+			}()
+			semaphore <- struct{}{}
 			resultChannel <- gh.GetWorkflowRuns(config.GHClient, workflow)
 		}(wf)
 	}
 
-	for range workflows {
-		r := <-resultChannel
+	go func() {
+		wg.Wait()
+		close(resultChannel)
+	}()
+
+	for r := range resultChannel {
 		resultsMap[r.Workflow.ID] = r
 	}
 
