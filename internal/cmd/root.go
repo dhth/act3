@@ -12,6 +12,7 @@ import (
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
 	"github.com/dhth/act3/internal/types"
+	"github.com/dhth/act3/internal/utils"
 )
 
 const (
@@ -35,6 +36,8 @@ var (
 	errTemplateFileDoesntExit  = errors.New("template file doesn't exist")
 	errCouldntReadTemplateFile = errors.New("couldn't read template file")
 	errCouldntGetWorkflows     = errors.New("couldn't get workflows")
+	errInvalidRepoProvided     = errors.New("invalid repo provided")
+	errReposProvided           = errors.New("invalid repos provided")
 )
 
 var (
@@ -42,7 +45,7 @@ var (
 	htmlTemplateFile = flag.String("t", "", "path of the HTML template file to use")
 	htmlTitle        = flag.String("html-title", "act3", "title to use in the HTML output")
 	global           = flag.Bool("g", false, "whether to use workflows defined globally via the config file")
-	repo             = flag.String("r", "", `repo to fetch workflows for, in the format "owner/repo"`)
+	repos            = flag.String("r", "", `comma delimited list of repos to fetch workflows for, in the format "owner/repo"`)
 	openFailed       = flag.Bool("o", false, `whether to open failed workflows`)
 )
 
@@ -86,14 +89,24 @@ Let %s know about this via %s.
 		return fmt.Errorf("%w", errConfigFilePathEmpty)
 	}
 
-	if *global && *repo != "" {
+	if *global && *repos != "" {
 		return fmt.Errorf("%w; -g and -r cannot both be provided at the same time", errFlagCombIncorrect)
 	}
 
-	if *repo != "" {
-		repoEls := strings.Split(*repo, "/")
-		if len(repoEls) != 2 {
-			return fmt.Errorf("%w; repo needs to be in the format \"owner/repo\"", errIncorrectRepoProvided)
+	if *repos != "" {
+		reposVal := strings.SplitSeq(*repos, ",")
+		var invalidRepos []string
+		for r := range reposVal {
+			if !utils.IsRepoNameValid(r) {
+				invalidRepos = append(invalidRepos, r)
+			}
+		}
+		if len(invalidRepos) == 1 {
+			return fmt.Errorf(`%w: %q; value needs to be in the format "owner/repo"`, errInvalidRepoProvided, invalidRepos[0])
+		}
+
+		if len(invalidRepos) > 1 {
+			return fmt.Errorf(`%w: %q; value needs to be in the format "owner/repo"`, errReposProvided, invalidRepos)
 		}
 	}
 
@@ -130,7 +143,7 @@ Let %s know about this via %s.
 	}
 
 	var workflows []types.Workflow
-	var currentRepo string
+	var reposToUse []string
 
 	if *global {
 		configFilePathExpanded := expandTilde(*configFilePath, userHomeDir)
@@ -148,22 +161,35 @@ Let %s know about this via %s.
 		}
 
 	} else {
-		if *repo != "" {
-			currentRepo = *repo
+		if *repos != "" {
+			reposToUse = strings.Split(*repos, ",")
 		} else {
-			currentRepo, err = getCurrentRepo()
+			currentRepo, err := getCurrentRepo()
 			if err != nil {
 				return err
 			}
+			reposToUse = []string{currentRepo}
 		}
+
 		ghRClient, err := ghapi.NewRESTClient(clientOpts)
 		if err != nil {
 			return fmt.Errorf("%w: %s", errCouldntGetGHClient, err.Error())
 		}
 
-		workflows, err = getWorkflowsForCurrentRepo(ghRClient, currentRepo)
-		if err != nil {
-			return fmt.Errorf("%w: %s", errCouldntGetWorkflows, err.Error())
+		var errors []error
+		workflows, errors = getWorkflowsForRepos(ghRClient, reposToUse)
+
+		if len(errors) == 1 {
+			return fmt.Errorf("%w:\n%s", errCouldntGetWorkflows, errors[0].Error())
+		}
+
+		if len(errors) > 1 {
+			errorStrs := make([]string, len(errors))
+			for i, e := range errors {
+				errorStrs[i] = fmt.Sprintf("- %s", e.Error())
+			}
+
+			return fmt.Errorf("%w:\n%s", errCouldntGetWorkflows, strings.Join(errorStrs, "\n"))
 		}
 	}
 
@@ -177,8 +203,8 @@ Let %s know about this via %s.
 	}
 
 	var cr *string
-	if !*global {
-		cr = &currentRepo
+	if !*global && len(reposToUse) == 1 {
+		cr = &reposToUse[0]
 	}
 	config := types.Config{
 		GHClient:     ghClient,

@@ -1,15 +1,11 @@
 package cmd
 
-//
 import (
 	"errors"
 	"fmt"
 	"net/url"
 	"strings"
 
-	ghapi "github.com/cli/go-gh/v2/pkg/api"
-	"github.com/dhth/act3/internal/gh"
-	"github.com/dhth/act3/internal/types"
 	"github.com/go-git/go-git/v5"
 )
 
@@ -20,24 +16,6 @@ var (
 	errInvalidURLFormat      = errors.New("remote URL has invalid format")
 	errCouldntParseRemoteURL = errors.New("couldn't parse remote URL")
 )
-
-func getWorkflowsForCurrentRepo(ghClient *ghapi.RESTClient, repo string) ([]types.Workflow, error) {
-	wd, err := gh.GetWorkflowDetails(ghClient, repo)
-	if err != nil {
-		return nil, err
-	}
-
-	workflows := make([]types.Workflow, len(wd.Workflows))
-	for i, w := range wd.Workflows {
-		workflows[i] = types.Workflow{
-			ID:   w.NodeID,
-			Repo: repo,
-			Name: w.Name,
-		}
-	}
-
-	return workflows, nil
-}
 
 func getCurrentRepo() (string, error) {
 	repo, err := git.PlainOpen(".")

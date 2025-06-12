@@ -70,11 +70,17 @@ type WorkflowDetails struct {
 	Workflows  []WorkflowDetailsResult
 }
 
-func GetWorkflowDetails(ghClient *ghapi.RESTClient, repo string) (WorkflowDetails, error) {
+type GetWorkflowResult struct {
+	Repo    string
+	Details WorkflowDetails
+	Err     error
+}
+
+func GetWorkflowDetails(ghClient *ghapi.RESTClient, repo string) GetWorkflowResult {
 	// https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#list-repository-workflows
 	var wd WorkflowDetails
 	err := ghClient.Get(fmt.Sprintf("repos/%s/actions/workflows", repo), &wd)
-	return wd, err
+	return GetWorkflowResult{Repo: repo, Details: wd, Err: err}
 }
 
 func (cs CheckSuite) IsAFailure() bool {
