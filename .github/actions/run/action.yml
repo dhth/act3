@@ -1,0 +1,45 @@
+name: run
+description: 'Runs act3'
+
+inputs:
+  go_version:
+    description: 'go version'
+    required: true
+  act3_app_id:
+    description: 'act3 app id'
+    required: true
+  act3_app_private_key:
+    description: 'act3 app private key'
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ inputs.go_version }}
+    - name: go build
+      shell: bash
+      run: go build .
+    - name: Generate GH token
+      id: generate-token
+      uses: actions/create-github-app-token@v2
+      with:
+        app-id: ${{ inputs.act3_app_id }}
+        private-key: ${{ inputs.act3_app_private_key }}
+    - name: Run act3 with default output
+      shell: bash
+      run: ./act3
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+    - name: Run act3 with tabular output
+      shell: bash
+      run: ./act3 -f table
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+    - name: Run act3 with HTML output
+      shell: bash
+      run: ./act3 -f html
+      env:
+        GH_TOKEN: ${{ steps.generate-token.outputs.token }}

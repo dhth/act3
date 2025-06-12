@@ -48,7 +48,7 @@ workflows:
     repo: dhth/kplay
     name: build
 
-  - id: W_kwDOOu3ogM4JwheW
+  - id: W_kwDOOu3ogM4KBjiY
     repo: dhth/mrj
     name: build
 
