@@ -1,6 +1,6 @@
 # act3
 
-[![Build Workflow Status](https://img.shields.io/github/actions/workflow/status/dhth/act3/ci.yml?style=flat-square)](https://github.com/dhth/act3/actions/workflows/ci.yml)
+[![Build Workflow Status](https://img.shields.io/github/actions/workflow/status/dhth/act3/main.yml?style=flat-square)](https://github.com/dhth/act3/actions/workflows/main.yml)
 [![Latest Release](https://img.shields.io/github/release/dhth/act3.svg?style=flat-square)](https://github.com/dhth/act3/releases/latest)
 [![Commits Since Latest Release](https://img.shields.io/github/commits-since/dhth/act3/latest?style=flat-square)](https://github.com/dhth/act3/releases)
 
