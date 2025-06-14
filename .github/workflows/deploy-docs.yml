@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 env:
-  GO_VERSION: 1.24.4
+  ACT3_VERSION: v2.0.0-rc.1
 
 jobs:
   deploy:
@@ -19,11 +19,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Install mrj
+        uses: jaxxstorm/action-install-gh-release@6096f2a2bbfee498ced520b6922ac2c06e990ed2 # v2.1.0
         with:
-          go-version: ${{ env.GO_VERSION }}
-      - run: go build .
+          repo: dhth/act3
+          tag: ${{ env.ACT3_VERSION }}
       - name: Generate GH token
         id: generate-token
         uses: actions/create-github-app-token@v2
@@ -33,7 +33,7 @@ jobs:
       - run: mkdir dist
       - name: Generate doc
         run: |
-          ./act3 \
+          act3 \
             -g \
             -c ./.github/act3.yml \
             -f html > dist/index.html

@@ -1,105 +1,37 @@
 workflows:
-
-  - id: W_kwDOLkC0eM4FaKV_
+  - id: W_kwDOLkC0eM4KBwzG
     repo: dhth/act3
-    name: build
-
-  - id: W_kwDON4qJ1M4Iknkc
+    name: main
+  - id: W_kwDON4qJ1M4KCoE2
     repo: dhth/bmm
-    name: buil
-
-  - id: W_kwDOOk2Ess4JisRx
+    name: main
+  - id: W_kwDOOk2Ess4JuT87
     repo: dhth/chronotes
-    name: build
-
-  - id: W_kwDOLvB80c4Fmr3Y
-    repo: dhth/commits
-    name: build
-
-  - id: W_kwDOLb3Pms4FRxjX
+    name: main
+  - id: W_kwDOLb3Pms4KCl62
     repo: dhth/cueitup
-    name: build
-
-  - id: W_kwDOLqVZts4FhIc3
-    repo: dhth/dstll
-    name: build
-
-  - id: W_kwDOOChY484Iyc_v
+    name: main
+  - id: W_kwDOOChY484KBxQT
     repo: dhth/ecscope
-    name: build
-
-  - id: W_kwDOLghtl84FWTlZ
+    name: main
+  - id: W_kwDOLghtl84KC1bd
     repo: dhth/ecsv
-    name: build
-
-  - id: W_kwDOOh1Jh84JeyxY
+    name: main
+  - id: W_kwDOOh1Jh84JuDWJ
     repo: dhth/ghx
-    name: build-gleam
-
-  - id: W_kwDOOh1Jh84JeyxZ
-    repo: dhth/ghx
-    name: build-rust
-
-  - id: W_kwDOMG_5As4GEdgo
+    name: main
+  - id: W_kwDOMG_5As4KC5fd
     repo: dhth/hours
-    name: build
-
-  - id: W_kwDOLa0twM4FRynm
+    name: main
+  - id: W_kwDOLa0twM4KClii
     repo: dhth/kplay
-    name: build
-
+    name: main
   - id: W_kwDOOu3ogM4KBjiY
     repo: dhth/mrj
-    name: build
-
-  - id: W_kwDOL0-ubM4FuRN3
-    repo: dhth/mult
-    name: build
-
-  - id: W_kwDOLafHJ84FQglT
-    repo: dhth/outtasync
-    name: build
-
-  - id: W_kwDOLnOhHM4FdsSJ
-    repo: dhth/prs
-    name: build
-
-  - id: W_kwDOLe-lJM4FUlXo
-    repo: dhth/punchout
-    name: build
-
-  - id: W_kwDOLe-lJM4FVCrl
-    repo: dhth/punchout
-    name: release
-
-  - id: W_kwDOLjRZQ84FZMD2
-    repo: dhth/schemas
-    name: build
-
-  - id: W_kwDONfFcSM4H-0Mr
-    repo: dhth/shfl
-    name: build
-
-  - id: W_kwDOM1h8ms4HFJyk
-    repo: dhth/squidge
-    name: build
-
-  - id: W_kwDONnFxls4IJ12j
-    repo: dhth/squish
-    name: build
-
-  - id: W_kwDON18Fhs4Igiag
+    name: main
+  - id: W_kwDON18Fhs4KByGh
     repo: dhth/tash
-    name: build
-
-  - id: W_kwDOMnT5Os4GyHDI
+    name: main
+  - id: W_kwDOMnT5Os4KCzgp
     repo: dhth/tbll
-    name: build
-
-  - id: W_kwDOMgkK1c4GovBh
-    repo: dhth/tomo
-    name: build
-
-  - id: W_kwDOODKhOM4Izhxv
-    repo: dhth/urll
-    name: build
+    name: main
