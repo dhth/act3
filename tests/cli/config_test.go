@@ -52,6 +52,23 @@ func TestCLI(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
+	t.Run("Sample config is valid", func(t *testing.T) {
+		// GIVEN
+		c := exec.Command(
+			binPath,
+			"config",
+			"validate",
+			"-c",
+			"../../internal/cmd/assets/sample-config.yml",
+		)
+
+		// WHEN
+		err := c.Run()
+
+		// THEN
+		assert.NoError(t, err)
+	})
+
 	//-------------//
 	//  FAILURES   //
 	//-------------//
