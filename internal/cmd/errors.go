@@ -36,6 +36,9 @@ func GetErrorContext(err error) ErrorContext {
 %s---`, sampleConfig))
 	case errors.Is(err, ErrCouldntMarshalConfigToYAML):
 		return unexpectedErr()
+	case errors.Is(err, ErrNotInAGitRepo):
+		return expectedErr(`If you're looking for workflows for a git repository, run act3 from the repository root.
+"act3 -g" can be run from anywhere.`)
 	}
 
 	return zero

@@ -10,7 +10,9 @@ import (
 )
 
 var (
+	ErrNotInAGitRepo         = errors.New("not in a git repo")
 	errCouldntGetRepo        = errors.New("couldn't get repository")
+	errCouldntFindRemotes    = errors.New("couldn't find remotes")
 	errNoRemotesFound        = errors.New("no remotes found")
 	errRemoteURLEmpty        = errors.New("remote URL is empty")
 	errInvalidURLFormat      = errors.New("remote URL has invalid format")
@@ -18,33 +20,37 @@ var (
 )
 
 func getCurrentRepo() (string, error) {
+	var zero string
 	repo, err := git.PlainOpen(".")
 	if err != nil {
+		if errors.Is(err, git.ErrRepositoryNotExists) {
+			return zero, ErrNotInAGitRepo
+		}
 		return "", fmt.Errorf("%w: %s", errCouldntGetRepo, err.Error())
 	}
 
 	remotes, err := repo.Remotes()
 	if err != nil {
-		return "", fmt.Errorf("%w: %s", errNoRemotesFound, err.Error())
+		return zero, fmt.Errorf("%w: %s", errCouldntFindRemotes, err.Error())
 	}
 
 	if len(remotes) == 0 {
-		return "", fmt.Errorf("%w", errNoRemotesFound)
+		return zero, errNoRemotesFound
 	}
 
 	remote := remotes[0]
 	if remote == nil {
-		return "", fmt.Errorf("%w", errNoRemotesFound)
+		return zero, errNoRemotesFound
 	}
 
 	remoteURL := remote.Config().URLs[0]
 
-	userRepo, err := extractRepoName(remoteURL)
+	repoName, err := extractRepoName(remoteURL)
 	if err != nil {
-		return "", fmt.Errorf("%w: %s", errCouldntParseRemoteURL, err.Error())
+		return zero, fmt.Errorf("%w: %s", errCouldntParseRemoteURL, err.Error())
 	}
 
-	return userRepo, nil
+	return repoName, nil
 }
 
 func extractRepoName(remoteURL string) (string, error) {
