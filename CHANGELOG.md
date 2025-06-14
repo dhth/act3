@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Allow opening failed workflows
+- Add command for generating act3's config
 
 ### Changed
 
+- Changed CLI interface to use dual flags (-g/--global)
 - Improve HTML layout
 - Allow fetching results for multiple repos
 
