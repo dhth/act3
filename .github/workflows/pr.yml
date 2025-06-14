@@ -119,5 +119,5 @@ jobs:
       - name: Release check
         uses: goreleaser/goreleaser-action@v6
         with:
-          version: '~> v2'
+          version: 'v2.9.0'
           args: check
