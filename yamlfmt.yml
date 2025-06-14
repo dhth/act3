@@ -1,0 +1,4 @@
+formatter:
+  retain_line_breaks_single: true
+exclude:
+  - tests/cli/assets/config-invalid-yaml.yml

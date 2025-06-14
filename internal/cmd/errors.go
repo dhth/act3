@@ -9,14 +9,14 @@ import (
 //go:embed assets/sample-config.yml
 var sampleConfig string
 
-type ErrorFollowUp struct {
+type ErrorContext struct {
 	IsUnexpected bool
 	Message      string
+	FollowUp     bool
 }
 
-// returns error follow up, and whether to follow up
-func GetErrorFollowUp(err error) (ErrorFollowUp, bool) {
-	var zero ErrorFollowUp
+func GetErrorContext(err error) ErrorContext {
+	var zero ErrorContext
 
 	switch {
 	case errors.Is(err, ErrConfigFileDoesntExit):
@@ -24,19 +24,34 @@ func GetErrorFollowUp(err error) (ErrorFollowUp, bool) {
 
 ---
 %s---`, sampleConfig))
-	case errors.Is(err, ErrCouldntParseConfig):
-		return expectedErr(fmt.Sprintf(`Make sure your config looks like this:
+	case errors.Is(err, ErrCouldntGetConfig):
+		return expectedErr(fmt.Sprintf(`Make sure the config looks like this:
 
 ---
 %s---`, sampleConfig))
+	case errors.Is(err, ErrConfigNotValid):
+		return expectedErr(fmt.Sprintf(`Here's a valid config:
+
+---
+%s---`, sampleConfig))
+	case errors.Is(err, ErrCouldntMarshalConfigToYAML):
+		return unexpectedErr()
 	}
 
-	return zero, false
+	return zero
 }
 
-func expectedErr(message string) (ErrorFollowUp, bool) {
-	return ErrorFollowUp{
+func unexpectedErr() ErrorContext {
+	return ErrorContext{
+		IsUnexpected: true,
+		FollowUp:     true,
+	}
+}
+
+func expectedErr(message string) ErrorContext {
+	return ErrorContext{
 		IsUnexpected: false,
 		Message:      message,
-	}, true
+		FollowUp:     true,
+	}
 }

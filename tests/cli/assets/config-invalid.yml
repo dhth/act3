@@ -1,0 +1,15 @@
+workflows:
+  - id: ''
+    repo: repo-1
+    name: workflow-1
+  - id: W_kwDON4qJ1M4KCoE2
+    repo: user/repo-2
+    name: ''
+  - id: W_kwDON4qJ1M4KCoE2
+    repo: user/repo-2
+    name: main
+    key: ''
+  - id: W_kwDON4qJ1M4KCoE2
+    repo: user/repo-2
+    name: main
+    url: sampleurl.com/{{runNumber}}

@@ -10,18 +10,18 @@ import (
 func main() {
 	err := cmd.Execute()
 	if err != nil {
-		followUp, toFollowUp := cmd.GetErrorFollowUp(err)
-		if !toFollowUp {
+		errContext := cmd.GetErrorContext(err)
+		if !errContext.FollowUp {
 			os.Exit(1)
 		}
 
-		if followUp.Message != "" {
+		if errContext.Message != "" {
 			fmt.Fprintf(os.Stderr, `
 %s
-`, followUp.Message)
+`, errContext.Message)
 		}
 
-		if followUp.IsUnexpected {
+		if errContext.IsUnexpected {
 			fmt.Fprintf(os.Stderr, `
 ------
 
