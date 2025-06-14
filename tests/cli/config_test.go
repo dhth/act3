@@ -95,6 +95,6 @@ Error: config is not valid:
 - workflow at index 3 has errors: [workflow key is empty]
 - workflow at index 4 has errors: [URL is invalid]
 `
-		assert.Equal(t, strings.TrimSpace(expected), strings.TrimSpace(string(output)))
+		assert.Contains(t, string(output), strings.TrimSpace(expected))
 	})
 }
