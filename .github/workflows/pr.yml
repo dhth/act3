@@ -33,6 +33,7 @@ jobs:
               - ".github/workflows/pr.yml"
             release:
               - ".goreleaser.yaml"
+              - ".github/workflows/pr.yml"
             workflows:
               - ".github/workflows/**.yml"
             yml:

@@ -35,6 +35,7 @@ jobs:
               - ".github/workflows/main.yml"
             release:
               - ".goreleaser.yaml"
+              - ".github/workflows/main.yml"
             workflows:
               - ".github/workflows/**.yml"
             yml:
