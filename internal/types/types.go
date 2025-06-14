@@ -12,7 +12,7 @@ const (
 	HTMLFmt
 )
 
-type Config struct {
+type RunConfig struct {
 	GHClient     *ghapi.GraphQLClient
 	CurrentRepo  *string
 	Fmt          OutputFmt
@@ -24,6 +24,6 @@ type Workflow struct {
 	ID   string  `yaml:"id"`
 	Repo string  `yaml:"repo"`
 	Name string  `yaml:"name"`
-	Key  *string `yaml:"key"`
-	URL  *string `yaml:"url"`
+	Key  *string `yaml:"key,omitempty"`
+	URL  *string `yaml:"url,omitempty"`
 }

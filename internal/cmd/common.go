@@ -1,3 +1,3 @@
 package cmd
 
-const maxConcurrentFetches = 50
+const maxConcurrentFetches = 100

@@ -8,7 +8,7 @@ import (
 	"github.com/dhth/act3/internal/ui"
 )
 
-func render(results []gh.ResultData, config types.Config) error {
+func render(results []gh.ResultData, config types.RunConfig) error {
 	output, err := ui.GetOutput(config, results)
 	if err != nil {
 		return err

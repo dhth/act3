@@ -8,7 +8,7 @@ import (
 	"github.com/dhth/act3/internal/types"
 )
 
-func getResults(workflows []types.Workflow, config types.Config) []gh.ResultData {
+func getResults(workflows []types.Workflow, config types.RunConfig) []gh.ResultData {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultsMap := make(map[string]gh.ResultData)
 	resultChannel := make(chan gh.ResultData)

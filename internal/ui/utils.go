@@ -42,7 +42,7 @@ func getCheckSuiteStateIndicator(state string) string {
 	case gh.CSStateInProgress:
 		return "⏳"
 	case gh.CSStateWaiting:
-		return "🔜"
+		return "🕓"
 	case gh.CSStatePending:
 		return "🟡"
 	default:

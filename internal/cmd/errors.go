@@ -18,8 +18,14 @@ type ErrorFollowUp struct {
 func GetErrorFollowUp(err error) (ErrorFollowUp, bool) {
 	var zero ErrorFollowUp
 
-	if errors.Is(err, ErrConfigFileDoesntExit) {
+	switch {
+	case errors.Is(err, ErrConfigFileDoesntExit):
 		return expectedErr(fmt.Sprintf(`Here's a sample config:
+
+---
+%s---`, sampleConfig))
+	case errors.Is(err, ErrCouldntParseConfig):
+		return expectedErr(fmt.Sprintf(`Make sure your config looks like this:
 
 ---
 %s---`, sampleConfig))

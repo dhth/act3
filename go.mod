@@ -10,6 +10,7 @@ require (
 	github.com/go-git/go-git/v5 v5.16.2
 	github.com/olekukonko/tablewriter v1.0.7
 	github.com/shurcooL/githubv4 v0.0.0-20240727222349-48295856cce7
+	github.com/spf13/cobra v1.9.1
 	github.com/stretchr/testify v1.10.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -49,7 +50,6 @@ require (
 	github.com/sergi/go-diff v1.4.0 // indirect
 	github.com/shurcooL/graphql v0.0.0-20230722043721-ed46e5a46466 // indirect
 	github.com/skeema/knownhosts v1.3.1 // indirect
-	github.com/spf13/cobra v1.9.1 // indirect
 	github.com/spf13/pflag v1.0.6 // indirect
 	github.com/thlib/go-timezone-local v0.0.6 // indirect
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
