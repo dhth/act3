@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"regexp"
+	"sort"
 	"sync"
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
@@ -13,7 +15,7 @@ type WorkflowError struct {
 	Err  error
 }
 
-func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string) ([]types.Workflow, []WorkflowError) {
+func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string, filter *regexp.Regexp) ([]types.Workflow, []WorkflowError) {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultChan := make(chan gh.GetWorkflowResult)
 	var wg sync.WaitGroup
@@ -43,16 +45,27 @@ func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string) ([]types.W
 				Repo: r.Repo,
 				Err:  r.Err,
 			})
-		} else {
-			for _, w := range r.Details.Workflows {
-				workflows = append(workflows, types.Workflow{
-					ID:   w.NodeID,
-					Repo: r.Repo,
-					Name: w.Name,
-				})
+			continue
+		}
+
+		for _, w := range r.Details.Workflows {
+			if filter != nil && !filter.MatchString(w.Name) {
+				continue
 			}
+
+			workflows = append(workflows, types.Workflow{
+				ID:   w.NodeID,
+				Repo: r.Repo,
+				Name: w.Name,
+			})
 		}
 	}
+	sort.Slice(workflows, func(i, j int) bool {
+		if workflows[i].Repo == workflows[j].Repo {
+			return workflows[i].Name < workflows[j].Name
+		}
+		return workflows[i].Repo < workflows[j].Repo
+	})
 
 	return workflows, errors
 }

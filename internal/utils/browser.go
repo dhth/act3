@@ -2,11 +2,12 @@ package utils
 
 import (
 	"os/exec"
+	"runtime"
 )
 
-func OpenURLsInBrowser(urls []string, goos string) error {
+func OpenURLsInBrowser(urls []string) error {
 	var openCmd string
-	switch goos {
+	switch runtime.GOOS {
 	case "darwin":
 		openCmd = "open"
 	default:

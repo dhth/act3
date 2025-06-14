@@ -8,7 +8,7 @@ import (
 	"github.com/dhth/act3/internal/utils"
 )
 
-func openFailedWorkflows(results []gh.ResultData, goos string) {
+func openFailedWorkflows(results []gh.ResultData) {
 	var urls []string
 	for _, r := range results {
 		if r.Err != nil {
@@ -26,7 +26,7 @@ func openFailedWorkflows(results []gh.ResultData, goos string) {
 		return
 	}
 
-	err := utils.OpenURLsInBrowser(urls, goos)
+	err := utils.OpenURLsInBrowser(urls)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error opening URLs: %s", err.Error())
 	}

@@ -36,7 +36,7 @@ var (
 //go:embed assets/template.html
 var htmlTemplate string
 
-func GetOutput(config types.Config, results []gh.ResultData) (string, error) {
+func GetOutput(config types.RunConfig, results []gh.ResultData) (string, error) {
 	switch config.Fmt {
 	case types.TableFmt:
 		return getTabularOutput(config, results)
@@ -47,7 +47,7 @@ func GetOutput(config types.Config, results []gh.ResultData) (string, error) {
 	}
 }
 
-func getTabularOutput(config types.Config, results []gh.ResultData) (string, error) {
+func getTabularOutput(config types.RunConfig, results []gh.ResultData) (string, error) {
 	rows := make([][]string, len(results))
 
 	for i, data := range results {
@@ -119,7 +119,7 @@ func getTabularOutput(config types.Config, results []gh.ResultData) (string, err
 	return b.String(), nil
 }
 
-func getTerminalOutput(config types.Config, results []gh.ResultData) string {
+func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
 	var s string
 	s += "\n"
 	s += " " + headerStyle.Render("act3")
@@ -219,7 +219,7 @@ func getTerminalOutput(config types.Config, results []gh.ResultData) string {
 	return s
 }
 
-func getHTMLOutput(config types.Config, results []gh.ResultData) (string, error) {
+func getHTMLOutput(config types.RunConfig, results []gh.ResultData) (string, error) {
 	var columns []string
 	rows := make([]htmlDataRow, len(results))
 
