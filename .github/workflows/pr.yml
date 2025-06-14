@@ -56,6 +56,8 @@ jobs:
       - name: go build
         run: go build -v ./...
       - name: go test
+        env:
+          INTEGRATION: '1'
         run: go test -v ./...
 
   lint:

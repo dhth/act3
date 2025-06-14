@@ -23,16 +23,16 @@ var (
 	errCouldntGetUserHomeDir      = errors.New("couldn't get your home directory")
 	errCouldntGetUserConfigDir    = errors.New("couldn't get your config directory")
 	errCouldntReadConfigFile      = errors.New("couldn't read config file")
-	errFlagCombIncorrect          = errors.New("flag combination incorrect")
+	errFlagCombIncorrect          = errors.New("invalid flag combination")
 	errIncorrectOutputFmt         = errors.New("incorrect value for output format provided")
 	ErrConfigFileDoesntExit       = errors.New("config file doesn't exist")
-	ErrCouldntParseConfig         = errors.New("couldn't read config")
+	ErrCouldntGetConfig           = errors.New("couldn't get config")
 	errCouldntGetGHClient         = errors.New("couldn't get a Github client")
 	errNoWorkflows                = errors.New("no workflows found")
 	errTemplateFileDoesntExit     = errors.New("template file doesn't exist")
 	errCouldntReadTemplateFile    = errors.New("couldn't read template file")
 	errCouldntGetWorkflows        = errors.New("couldn't get workflows")
-	ErrCouldntMarshalConfigToYAML = errors.New("couldn't marshall workflows to YAML")
+	ErrCouldntMarshalConfigToYAML = errors.New("couldn't marshal workflows to YAML")
 	errInvalidWorkflowFilterRegex = errors.New("workflow filter is invalid regex")
 )
 
@@ -63,6 +63,7 @@ func NewRootCommand() (*cobra.Command, error) {
 		Use:          "act3",
 		Short:        "Glance at the last 3 runs of your GitHub Actions workflows",
 		SilenceUsage: true,
+		Args:         cobra.NoArgs,
 		RunE: func(_ *cobra.Command, _ []string) error {
 			if globalWorkflows && len(repos) > 0 {
 				return fmt.Errorf("%w; -g and -r cannot both be provided at the same time", errFlagCombIncorrect)
@@ -117,9 +118,9 @@ func NewRootCommand() (*cobra.Command, error) {
 				if cfgErr != nil {
 					return fmt.Errorf("%w: %w", errCouldntReadConfigFile, cfgErr)
 				}
-				workflows, cfgErr = getWorkflowFromConfig(configBytes)
+				workflows, cfgErr = getWorkflowsFromConfig(configBytes)
 				if cfgErr != nil {
-					return fmt.Errorf("%w: %s", ErrCouldntParseConfig, cfgErr.Error())
+					return fmt.Errorf("%w: %s", ErrCouldntGetConfig, cfgErr.Error())
 				}
 
 			} else {
@@ -155,7 +156,7 @@ func NewRootCommand() (*cobra.Command, error) {
 				workflows, errors = getWorkflowsForRepos(ghRestClient, reposToUse, workflowFilter)
 
 				if len(errors) == 1 {
-					return fmt.Errorf("%w:\n%s", errCouldntGetWorkflows, errors[0].Err.Error())
+					return fmt.Errorf("%w: %s", errCouldntGetWorkflows, errors[0].Err.Error())
 				}
 
 				if len(errors) > 1 {
@@ -253,7 +254,7 @@ You can either generate the config for the current repository or for the list of
 			workflows, errors := getWorkflowsForRepos(ghRestClient, reposToUse, workflowFilter)
 
 			if len(errors) == 1 {
-				return fmt.Errorf("%w:\n%s", errCouldntGetWorkflows, errors[0].Err.Error())
+				return fmt.Errorf("%w: %s", errCouldntGetWorkflows, errors[0].Err.Error())
 			}
 
 			if len(errors) > 1 {
@@ -285,6 +286,35 @@ You can either generate the config for the current repository or for the list of
 		},
 	}
 
+	validateConfigCmd := &cobra.Command{
+		Use:   "validate",
+		Short: "Validate act3's config",
+		Args:  cobra.NoArgs,
+		RunE: func(_ *cobra.Command, _ []string) error {
+			configPathFull := utils.ExpandTilde(configPath, homeDir)
+
+			var cfgErr error
+			_, cfgErr = os.Stat(configPathFull)
+			if os.IsNotExist(cfgErr) {
+				return fmt.Errorf("%w, path: %q", ErrConfigFileDoesntExit, configPathFull)
+			}
+
+			configPathFull = utils.ExpandTilde(configPath, homeDir)
+			configBytes, cfgErr = os.ReadFile(configPathFull)
+			if cfgErr != nil {
+				return fmt.Errorf("%w: %w", errCouldntReadConfigFile, cfgErr)
+			}
+			_, cfgErr = getWorkflowsFromConfig(configBytes)
+			if cfgErr != nil {
+				return cfgErr
+			}
+
+			fmt.Fprintln(os.Stderr, "config looks good ✅")
+
+			return nil
+		},
+	}
+
 	var err error
 	homeDir, err = os.UserHomeDir()
 	if err != nil {
@@ -298,7 +328,7 @@ You can either generate the config for the current repository or for the list of
 
 	defaultConfigPath := filepath.Join(configDir, configFileName)
 
-	rootCmd.Flags().StringVarP(&configPath, "config-path", "c", defaultConfigPath, "location of ecsv's config file")
+	rootCmd.Flags().StringVarP(&configPath, "config-path", "c", defaultConfigPath, "location of act3's config file")
 	rootCmd.Flags().StringSliceVarP(&repos, "repos", "r", []string{}, `repos to fetch workflows for, in the format "owner/repo"`)
 	rootCmd.Flags().StringVarP(&workflowFilterStr, "workflow-name-filter", "n", "", "regex expression to filter workflows by name")
 	rootCmd.Flags().BoolVarP(&globalWorkflows, "global", "g", false, "whether to use workflows defined globally via the config file")
@@ -310,7 +340,10 @@ You can either generate the config for the current repository or for the list of
 	generateConfigCmd.Flags().StringSliceVarP(&repos, "repos", "r", []string{}, `repos to generate the config for, in the format "owner/repo"`)
 	generateConfigCmd.Flags().StringVarP(&workflowFilterStr, "workflow-name-filter", "n", "", "regex expression to filter workflows by name")
 
+	validateConfigCmd.Flags().StringVarP(&configPath, "config-path", "c", defaultConfigPath, "location of act3's config file")
+
 	configCmd.AddCommand(generateConfigCmd)
+	configCmd.AddCommand(validateConfigCmd)
 	rootCmd.AddCommand(configCmd)
 
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
