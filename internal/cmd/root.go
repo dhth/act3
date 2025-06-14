@@ -175,17 +175,17 @@ Let %s know about this via %s.
 			return fmt.Errorf("%w: %s", errCouldntGetGHClient, err.Error())
 		}
 
-		var errors []error
+		var errors []WorkflowError
 		workflows, errors = getWorkflowsForRepos(ghRClient, reposToUse)
 
 		if len(errors) == 1 {
-			return fmt.Errorf("%w:\n%s", errCouldntGetWorkflows, errors[0].Error())
+			return fmt.Errorf("%w:\n%s", errCouldntGetWorkflows, errors[0].Err.Error())
 		}
 
 		if len(errors) > 1 {
 			errorStrs := make([]string, len(errors))
 			for i, e := range errors {
-				errorStrs[i] = fmt.Sprintf("- %s", e.Error())
+				errorStrs[i] = fmt.Sprintf("- %s: %s", e.Repo, e.Err.Error())
 			}
 
 			return fmt.Errorf("%w:\n%s", errCouldntGetWorkflows, strings.Join(errorStrs, "\n"))

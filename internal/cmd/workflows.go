@@ -8,7 +8,12 @@ import (
 	"github.com/dhth/act3/internal/types"
 )
 
-func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string) ([]types.Workflow, []error) {
+type WorkflowError struct {
+	Repo string
+	Err  error
+}
+
+func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string) ([]types.Workflow, []WorkflowError) {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultChan := make(chan gh.GetWorkflowResult)
 	var wg sync.WaitGroup
@@ -31,10 +36,13 @@ func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string) ([]types.W
 	}()
 
 	var workflows []types.Workflow
-	var errors []error
+	var errors []WorkflowError
 	for r := range resultChan {
 		if r.Err != nil {
-			errors = append(errors, r.Err)
+			errors = append(errors, WorkflowError{
+				Repo: r.Repo,
+				Err:  r.Err,
+			})
 		} else {
 			for _, w := range r.Details.Workflows {
 				workflows = append(workflows, types.Workflow{
