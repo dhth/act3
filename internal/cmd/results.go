@@ -8,8 +8,6 @@ import (
 	"github.com/dhth/act3/internal/types"
 )
 
-const maxConcurrentFetches = 50
-
 func getResults(workflows []types.Workflow, config types.Config) []gh.ResultData {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultsMap := make(map[string]gh.ResultData)
@@ -49,7 +47,7 @@ func getResults(workflows []types.Workflow, config types.Config) []gh.ResultData
 		})
 		results = resultsList
 	} else {
-		// sort workflows in the sequence of the config file
+		// sort results in the sequence of the workflows received
 		resultsInConfigDefinedOrder := make([]gh.ResultData, len(workflows))
 		for i, w := range workflows {
 			resultsInConfigDefinedOrder[i] = resultsMap[w.ID]
