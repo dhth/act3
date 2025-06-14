@@ -304,7 +304,7 @@ You can either generate the config for the current repository or for the list of
 	rootCmd.Flags().BoolVarP(&globalWorkflows, "global", "g", false, "whether to use workflows defined globally via the config file")
 	rootCmd.Flags().StringVarP(&formatStr, "format", "f", "default", "output format to use; possible values: default, table, html")
 	rootCmd.Flags().StringVar(&htmlTemplateFile, "html-template-path", "", "path of the HTML template file to use")
-	rootCmd.Flags().StringVar(&htmlTitle, "html-title", "", "title to use in the HTML output")
+	rootCmd.Flags().StringVar(&htmlTitle, "html-title", "act3", "title to use in the HTML output")
 	rootCmd.Flags().BoolVarP(&openFailed, "open-failed", "o", false, "whether to open failed workflows")
 
 	generateConfigCmd.Flags().StringSliceVarP(&repos, "repos", "r", []string{}, `repos to generate the config for, in the format "owner/repo"`)
