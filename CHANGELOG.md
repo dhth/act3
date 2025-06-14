@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Allow opening failed workflows
 - Add command for generating act3's config
+- Add command for validating act3's config
 
 ### Changed
 
