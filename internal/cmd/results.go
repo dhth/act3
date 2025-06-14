@@ -8,8 +8,6 @@ import (
 	"github.com/dhth/act3/internal/types"
 )
 
-const maxConcurrentFetches = 50
-
 func getResults(workflows []types.Workflow, config types.Config) []gh.ResultData {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultsMap := make(map[string]gh.ResultData)

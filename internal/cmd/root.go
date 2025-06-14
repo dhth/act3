@@ -25,7 +25,6 @@ const (
 var (
 	errCouldntGetHomeDir       = errors.New("couldn't get home directory")
 	errFlagCombIncorrect       = errors.New("flag combination incorrect")
-	errIncorrectRepoProvided   = errors.New("incorrect repo provided")
 	errCouldntGetConfigDir     = errors.New("couldn't get your config directory")
 	errConfigFilePathEmpty     = errors.New("config file path is empty")
 	errIncorrectOutputFmt      = errors.New("incorrect value for output format provided")
