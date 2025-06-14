@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Allow opening failed workflows
+
 ### Changed
 
+- Improve HTML layout
 - Allow fetching results for multiple repos
 
 ## [v1.1.4] - Jan 07, 2025
@@ -55,9 +60,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Ability to filter for messages with a specific context value
 
-[unreleased]: https://github.com/dhth/act3/compare/v1.4.0...HEAD
-[v1.4.0]: https://github.com/dhth/act3/compare/v1.3.0...v1.4.0
-[v1.3.0]: https://github.com/dhth/act3/compare/v1.2.0...v1.3.0
-[v1.2.0]: https://github.com/dhth/act3/compare/v1.1.0...v1.2.0
+[unreleased]: https://github.com/dhth/act3/compare/v1.1.4...HEAD
+[v1.1.4]: https://github.com/dhth/act3/compare/v1.1.3...v1.1.4
+[v1.1.3]: https://github.com/dhth/act3/compare/v1.1.2...v1.1.3
+[v1.1.2]: https://github.com/dhth/act3/compare/v1.1.1...v1.1.2
 [v1.1.0]: https://github.com/dhth/act3/compare/v1.0.0...v1.1.0
 [v1.0.0]: https://github.com/dhth/act3/compare/v0.4.0...v1.0.0
