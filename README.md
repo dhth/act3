@@ -10,6 +10,9 @@
 
 Glance at the results of the last 3 runs of your Github Actions.
 
+> Want to see a demo before you read the rest of the documentation?
+> View `act3` in action [here][3].
+
 <p align="center">
   <img src="https://tools.dhruvs.space/images/act3/act3-1.png" alt="Usage" />
 </p>
@@ -154,8 +157,7 @@ The resultant HTML page looks like this.
   <img src="https://tools.dhruvs.space/images/act3/act3-html-1.png" alt="Usage" />
 </p>
 
-> A sample page generated via `act3` is running at
-> [https://dhth.github.io/act3](https://dhth.github.io/act3).
+> You can see this in action [here][3].
 
 🔐 Verifying release artifacts
 ---
@@ -200,3 +202,4 @@ you want):
    ```
 
 [2]: https://github.com/dhth/act3/releases
+[3]: https://dhth.github.io/act3-runner
