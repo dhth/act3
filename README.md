@@ -1,8 +1,12 @@
-# act3
-
-[![Build Workflow Status](https://img.shields.io/github/actions/workflow/status/dhth/act3/main.yml?style=flat-square)](https://github.com/dhth/act3/actions/workflows/main.yml)
-[![Latest Release](https://img.shields.io/github/release/dhth/act3.svg?style=flat-square)](https://github.com/dhth/act3/releases/latest)
-[![Commits Since Latest Release](https://img.shields.io/github/commits-since/dhth/act3/latest?style=flat-square)](https://github.com/dhth/act3/releases)
+<p align="center">
+  <h1 align="center">act3</h1>
+  <p align="center">
+    <a href="https://github.com/dhth/act3/actions/workflows/main.yml"><img alt="Build Status" src="https://img.shields.io/github/actions/workflow/status/dhth/act3/main.yml?style=flat-square"></a>
+    <a href="https://github.com/dhth/act3/actions/workflows/vulncheck.yml"><img alt="Vulnerability Check" src="https://img.shields.io/github/actions/workflow/status/dhth/act3/vulncheck.yml?style=flat-square&label=vulncheck"></a>
+    <a href="https://github.com/dhth/act3/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/release/dhth/act3.svg?style=flat-square"></a>
+    <a href="https://github.com/dhth/act3/releases/latest"><img alt="Commits since latest release" src="https://img.shields.io/github/commits-since/dhth/act3/latest?style=flat-square"></a>
+  </p>
+</p>
 
 Glance at the results of the last 3 runs of your Github Actions.
 
