@@ -56,76 +56,67 @@ of two ways:
 ```text
 Usage:
   act3 [flags]
+  act3 [command]
+
+Available Commands:
+  config      Interact with act3's config
+  help        Help about any command
 
 Flags:
-  -c string                       path of the config file (default "/Users/user/.config/act3/act3.yml")
-  -f string                       output format to use; possible values: default, table, html (default "default")
-  -t string                       path of the HTML template file to use
-  -r string                       repo to fetch workflows for, in the format "owner/repo"
-  -g bool                         whether to use workflows defined globally via the config file (default false)
-  -o bool                         whether to open failed workflows (via your OS's "open" command) (default false)
-  -h, --help                      help for act3
+  -c, --config-path string            location of act3's config file (default "/Users/user/Library/Application Support/act3/act3.yml")
+  -f, --format string                 output format to use; possible values: default, table, html (default "default")
+  -g, --global                        whether to use workflows defined globally via the config file
+  -h, --help                          help for act3
+      --html-template-path string     path of the HTML template file to use
+      --html-title string             title to use in the HTML output (default "act3")
+  -o, --open-failed                   whether to open failed workflows
+  -r, --repos strings                 repos to fetch workflows for, in the format "owner/repo"
+  -n, --workflow-name-filter string   regex expression to filter workflows by name
 ```
 
 By default, `act3` will show results for the repository associated with the
 current directory. Simply run `act3` from the project root.
 
-You can also specify a repository to fetch results for using the `-r` flag.
+You can also specify a list of repositories to fetch results for using the `-r`
+flag.
 
 ```bash
-act3 -r neovim/neovim
+act3 -r dhth/act3,dhth/bmm
 ```
 
 ### Specific Workflows
 
 You can also fetch results for specific workflows using a config file, that
-looks like the following.
+looks like the following. Run `act3 -h` to view the default location where
+`act3` looks for this config file.
 
 ```yaml
 workflows:
-
 - id: W_kwDOLkC0eM4FaKV_
   repo: dhth/act3
   name: build
-  url: https://asampleurl.com/{{runNumber}}
-- id: W_kwDOLkC0eM4FaKWA
-  repo: dhth/act3
-  name: release
-  url: https://asampleurl.com/{{runNumber}}
-
 - id: W_kwDOLb3Pms4FRxjX
   repo: dhth/cueitup
   name: build
-  url: https://dhth.github.io/cueitup
+  key: cueitup-release  # optional
 - id: W_kwDOLb3Pms4FRxjY
   repo: dhth/cueitup
   name: release
-  url: https://dhth.github.io/cueitup
-
-- id: W_kwDOLghtl84FWTlZ
-  repo: dhth/ecsv
-  name: build
-- id: W_kwDOLghtl84FWTla
-  repo: dhth/ecsv
-  name: release
+  url: https://asampleurl.com/{{runNumber}} # optional
 ```
 
 `{{runNumber}}` gets replaced with the actual run number of the workflow.
 
-You can find the ID of a workflow as follows:
+You can generate this configuration using `act3` itself.
 
 ```bash
-curl -L \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer <GH_TOKEN>" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://api.github.com/repos/<OWNER>/<REPO>/actions/workflows
+Usage:
+  act3 config gen [flags]
 
-# or
-
-gh api repos/<OWNER>/<REPO>/actions/workflows
-
-# use node_id from the response
+Flags:
+  -h, --help                          help for gen
+  -r, --repos strings                 repos to generate the config for, in the format "owner/repo"
+  -n, --workflow-name-filter string   regex expression to filter workflows by name
 ```
 
 ### Tabular output
