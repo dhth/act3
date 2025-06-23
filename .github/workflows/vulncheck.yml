@@ -3,7 +3,7 @@ name: vulncheck
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 8 * * 6'
+    - cron: '0 2 * * 2,6'
 
 env:
   GO_VERSION: '1.24.4'
