@@ -13,9 +13,7 @@ Glance at the results of the last 3 runs of your Github Actions.
 > Want to see a demo before you read the rest of the documentation?
 > View `act3` in action [here][3].
 
-<p align="center">
-  <img src="https://tools.dhruvs.space/images/act3/act3-1.png" alt="Usage" />
-</p>
+[![usage](https://asciinema.org/a/BS5LAEWzxV81uXJG3tiFcGULW.svg)](https://asciinema.org/a/BS5LAEWzxV81uXJG3tiFcGULW)
 
 💾 Installation
 ---
@@ -84,6 +82,8 @@ flag.
 act3 -r dhth/act3,dhth/bmm
 ```
 
+[![run-on-configured-workflows](https://asciinema.org/a/IXj8L58ILEDawB7NhF5A2uKlJ.svg)](https://asciinema.org/a/IXj8L58ILEDawB7NhF5A2uKlJ)
+
 ### Specific Workflows
 
 You can also fetch results for specific workflows using a config file, that
@@ -118,6 +118,8 @@ Flags:
   -r, --repos strings                 repos to generate the config for, in the format "owner/repo"
   -n, --workflow-name-filter string   regex expression to filter workflows by name
 ```
+
+[![generate-own-config](https://asciinema.org/a/FoiwDy42w4HjV94E5xRa9Kav9.svg)](https://asciinema.org/a/FoiwDy42w4HjV94E5xRa9Kav9)
 
 ### Tabular output
 
