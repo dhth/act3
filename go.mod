@@ -8,7 +8,7 @@ require (
 	github.com/cli/shurcooL-graphql v0.0.4
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-git/go-git/v5 v5.16.2
-	github.com/olekukonko/tablewriter v1.0.9
+	github.com/olekukonko/tablewriter v1.1.0
 	github.com/shurcooL/githubv4 v0.0.0-20240727222349-48295856cce7
 	github.com/spf13/cobra v1.10.1
 	github.com/stretchr/testify v1.11.1
