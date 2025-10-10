@@ -1,6 +1,6 @@
 module github.com/dhth/act3
 
-go 1.25.0
+go 1.25.2
 
 require (
 	github.com/charmbracelet/lipgloss v1.1.1-0.20250319133953-166f707985bc
