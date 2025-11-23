@@ -321,7 +321,7 @@ func getHTMLOutput(config types.RunConfig, results []gh.ResultData) (string, err
 	if unsuccessfulRuns {
 		hData.Failures = nonSuccessfulRuns
 	}
-	hData.Timestamp = time.Now().Format("2006-01-02 15:04:05 MST")
+	hData.Timestamp = time.Now().UTC().Format("2006-01-02T15:04:05Z")
 
 	var tmpl *template.Template
 	var err error
