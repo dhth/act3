@@ -37,7 +37,7 @@ func getResults(workflows []types.Workflow, config types.RunConfig) []gh.ResultD
 	}
 
 	if config.CurrentRepo != nil {
-		var resultsList []gh.ResultData
+		resultsList := make([]gh.ResultData, 0, len(resultsMap))
 		for _, r := range resultsMap {
 			resultsList = append(resultsList, r)
 		}
