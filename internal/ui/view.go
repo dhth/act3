@@ -220,7 +220,7 @@ func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
 }
 
 func getHTMLOutput(config types.RunConfig, results []gh.ResultData) (string, error) {
-	var columns []string
+	columns := make([]string, 0, 4)
 	rows := make([]htmlDataRow, len(results))
 
 	hData := htmlData{
