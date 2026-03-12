@@ -113,7 +113,7 @@ type ResultData struct {
 }
 
 func GetWorkflowRuns(ghClient *ghapi.GraphQLClient, workflow types.Workflow) ResultData {
-	variables := map[string]interface{}{
+	variables := map[string]any{
 		"numWorkflowRuns": ghgql.Int(3),
 		"workflowId":      ghgql.ID(workflow.ID),
 	}
