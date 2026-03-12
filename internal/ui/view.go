@@ -120,23 +120,23 @@ func getTabularOutput(config types.RunConfig, results []gh.ResultData) (string, 
 }
 
 func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
-	var s string
-	s += "\n"
-	s += " " + headerStyle.Render("act3")
+	var s strings.Builder
+	s.WriteString("\n")
+	s.WriteString(" " + headerStyle.Render("act3"))
 
 	if config.CurrentRepo != nil {
-		s += currentRepoStyle.Render(*config.CurrentRepo)
+		s.WriteString(currentRepoStyle.Render(*config.CurrentRepo))
 	}
-	s += "\n\n"
+	s.WriteString("\n\n")
 
-	s += workflowStyle.Render("workflow")
+	s.WriteString(workflowStyle.Render("workflow"))
 
 	headers := []string{"last", "2nd last", "3rd last"}
 	for _, header := range headers {
-		s += fmt.Sprintf("%s    ", runNumberStyle.Render(header))
+		s.WriteString(fmt.Sprintf("%s    ", runNumberStyle.Render(header)))
 	}
 
-	s += "\n\n"
+	s.WriteString("\n\n")
 
 	errorIndex := 0
 	var errors []error
@@ -145,7 +145,7 @@ func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
 
 	for _, data := range results {
 		if data.Workflow.Key != nil {
-			s += workflowStyle.Render(RightPadTrim(*data.Workflow.Key, runNumberWidth))
+			s.WriteString(workflowStyle.Render(RightPadTrim(*data.Workflow.Key, runNumberWidth)))
 		} else {
 			var wf string
 			if config.CurrentRepo != nil {
@@ -153,15 +153,15 @@ func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
 			} else {
 				wf = fmt.Sprintf("%s:%s", data.Workflow.Repo, data.Workflow.Name)
 			}
-			s += workflowStyle.Render(RightPadTrim(wf, runNumberWidth))
+			s.WriteString(workflowStyle.Render(RightPadTrim(wf, runNumberWidth)))
 		}
 		if data.Err != nil {
 			for range 3 {
-				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
+				s.WriteString(runResultStyle.Render(fmt.Sprintf("%s %s %s",
 					errorTextStyle.Render(RightPadTrim(fmt.Sprintf("#%d", errorIndex+1), runNumberPadding)),
 					"😵",
 					errorTextStyle.Render("(error)"),
-				))
+				)))
 			}
 			errors = append(errors, data.Err)
 			errorIndex++
@@ -186,37 +186,37 @@ func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
 				style := getResultStyle(rr.CheckSuite.Conclusion)
 
 				resultsDate := "(" + humanize.Time(rr.CreatedAt.Time) + ")"
-				s += runResultStyle.Render(fmt.Sprintf("%s %s %s",
+				s.WriteString(runResultStyle.Render(fmt.Sprintf("%s %s %s",
 					style.Render(RightPadTrim(fmt.Sprintf("#%d", rr.RunNumber), runNumberPadding)),
 					indicator,
 					faintStyle.Render(resultsDate),
-				))
+				)))
 			}
 		}
-		s += "\n"
+		s.WriteString("\n")
 	}
 
 	if unsuccessfulRuns {
-		s += "\n"
-		s += nonSuccessHeadingStyle.Render("Non successful runs")
-		s += "\n"
+		s.WriteString("\n")
+		s.WriteString(nonSuccessHeadingStyle.Render("Non successful runs"))
+		s.WriteString("\n")
 		for k, v := range nonSuccessfulRuns {
-			s += errorDetailStyle.Render(fmt.Sprintf("%s%s", RightPadTrim(k, 65), v))
-			s += "\n"
+			s.WriteString(errorDetailStyle.Render(fmt.Sprintf("%s%s", RightPadTrim(k, 65), v)))
+			s.WriteString("\n")
 		}
 	}
 
 	if len(errors) > 0 {
-		s += "\n"
-		s += errorHeadingStyle.Render("Errors")
-		s += "\n"
+		s.WriteString("\n")
+		s.WriteString(errorHeadingStyle.Render("Errors"))
+		s.WriteString("\n")
 		for index, err := range errors {
-			s += errorDetailStyle.Render(fmt.Sprintf("[#%2d]: %s", index+1, err.Error()))
-			s += "\n"
+			s.WriteString(errorDetailStyle.Render(fmt.Sprintf("[#%2d]: %s", index+1, err.Error())))
+			s.WriteString("\n")
 		}
 	}
 
-	return s
+	return s.String()
 }
 
 func getHTMLOutput(config types.RunConfig, results []gh.ResultData) (string, error) {
