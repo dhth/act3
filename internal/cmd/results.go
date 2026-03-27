@@ -4,11 +4,12 @@ import (
 	"sort"
 	"sync"
 
+	ghapi "github.com/cli/go-gh/v2/pkg/api"
 	"github.com/dhth/act3/internal/domain"
 	"github.com/dhth/act3/internal/service"
 )
 
-func getResults(workflows []domain.Workflow, config domain.RunConfig) []domain.ResultData {
+func getResults(client *ghapi.GraphQLClient, workflows []domain.Workflow, forCurrentRepo bool) []domain.ResultData {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultsMap := make(map[string]domain.ResultData)
 	resultChannel := make(chan domain.ResultData)
@@ -23,7 +24,7 @@ func getResults(workflows []domain.Workflow, config domain.RunConfig) []domain.R
 				<-semaphore
 			}()
 			semaphore <- struct{}{}
-			resultChannel <- service.GetWorkflowRuns(config.GHClient, workflow)
+			resultChannel <- service.GetWorkflowRuns(client, workflow)
 		}(wf)
 	}
 
@@ -36,7 +37,7 @@ func getResults(workflows []domain.Workflow, config domain.RunConfig) []domain.R
 		resultsMap[r.Workflow.ID] = r
 	}
 
-	if config.CurrentRepo != nil {
+	if forCurrentRepo {
 		resultsList := make([]domain.ResultData, 0, len(resultsMap))
 		for _, r := range resultsMap {
 			resultsList = append(resultsList, r)

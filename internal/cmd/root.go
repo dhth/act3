@@ -173,7 +173,7 @@ func NewRootCommand() (*cobra.Command, error) {
 				return fmt.Errorf("%w", errNoWorkflows)
 			}
 
-			ghGQLClient, err := ghapi.NewGraphQLClient(clientOpts)
+			ghClient, err := ghapi.NewGraphQLClient(clientOpts)
 			if err != nil {
 				return fmt.Errorf("%w: %s", errCouldntGetGHClient, err.Error())
 			}
@@ -183,14 +183,13 @@ func NewRootCommand() (*cobra.Command, error) {
 				cr = &reposToUse[0]
 			}
 			config := domain.RunConfig{
-				GHClient:     ghGQLClient,
 				CurrentRepo:  cr,
 				Fmt:          outputFmt,
 				HTMLTemplate: htmlTemplate,
 				HTMLTitle:    htmlTitle,
 			}
 
-			results := getResults(workflows, config)
+			results := getResults(ghClient, workflows, config.CurrentRepo != nil)
 
 			err = render(results, config)
 			if err != nil {
