@@ -3,25 +3,8 @@ package domain
 import (
 	"strings"
 
-	ghapi "github.com/cli/go-gh/v2/pkg/api"
 	"github.com/dhth/act3/internal/utils"
 )
-
-type OutputFmt uint
-
-const (
-	DefaultFmt OutputFmt = iota
-	TableFmt
-	HTMLFmt
-)
-
-type RunConfig struct {
-	GHClient     *ghapi.GraphQLClient
-	CurrentRepo  *string
-	Fmt          OutputFmt
-	HTMLTitle    string
-	HTMLTemplate string
-}
 
 type Workflow struct {
 	ID   string  `yaml:"id"`
@@ -55,4 +38,21 @@ func (w Workflow) Validate() []string {
 	}
 
 	return errors
+}
+
+type WorkflowDetailsResult struct {
+	NodeID string `json:"node_id"`
+	Name   string
+	State  string
+}
+
+type WorkflowDetails struct {
+	TotalCount int
+	Workflows  []WorkflowDetailsResult
+}
+
+type GetWorkflowResult struct {
+	Repo    string
+	Details WorkflowDetails
+	Err     error
 }

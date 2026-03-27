@@ -54,23 +54,6 @@ type QueryResult struct {
 	NodeResult `graphql:"node(id: $workflowId)"`
 }
 
-type WorkflowDetailsResult struct {
-	NodeID string `json:"node_id"`
-	Name   string
-	State  string
-}
-
-type WorkflowDetails struct {
-	TotalCount int
-	Workflows  []WorkflowDetailsResult
-}
-
-type GetWorkflowResult struct {
-	Repo    string
-	Details WorkflowDetails
-	Err     error
-}
-
 func (cs CheckSuite) IsAFailure() bool {
 	switch cs.Conclusion {
 	case CSConclusionActionReq, CSConclusionTimedOut, CSConclusionFailure, CSConclusionStartupFailure:
