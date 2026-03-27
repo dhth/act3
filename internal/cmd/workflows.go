@@ -6,8 +6,8 @@ import (
 	"sync"
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
+	"github.com/dhth/act3/internal/domain"
 	"github.com/dhth/act3/internal/gh"
-	"github.com/dhth/act3/internal/types"
 )
 
 type WorkflowError struct {
@@ -15,7 +15,7 @@ type WorkflowError struct {
 	Err  error
 }
 
-func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string, filter *regexp.Regexp) ([]types.Workflow, []WorkflowError) {
+func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string, filter *regexp.Regexp) ([]domain.Workflow, []WorkflowError) {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultChan := make(chan gh.GetWorkflowResult)
 	var wg sync.WaitGroup
@@ -37,7 +37,7 @@ func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string, filter *re
 		close(resultChan)
 	}()
 
-	var workflows []types.Workflow
+	var workflows []domain.Workflow
 	var errors []WorkflowError
 	for r := range resultChan {
 		if r.Err != nil {
@@ -53,7 +53,7 @@ func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string, filter *re
 				continue
 			}
 
-			workflows = append(workflows, types.Workflow{
+			workflows = append(workflows, domain.Workflow{
 				ID:   w.NodeID,
 				Repo: r.Repo,
 				Name: w.Name,

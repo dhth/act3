@@ -5,7 +5,7 @@ import (
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
 	ghgql "github.com/cli/shurcooL-graphql"
-	"github.com/dhth/act3/internal/types"
+	"github.com/dhth/act3/internal/domain"
 	"github.com/shurcooL/githubv4"
 )
 
@@ -107,12 +107,12 @@ func (cs CheckSuite) ConclusionOrState() string {
 }
 
 type ResultData struct {
-	Workflow types.Workflow
+	Workflow domain.Workflow
 	Result   QueryResult
 	Err      error
 }
 
-func GetWorkflowRuns(ghClient *ghapi.GraphQLClient, workflow types.Workflow) ResultData {
+func GetWorkflowRuns(ghClient *ghapi.GraphQLClient, workflow domain.Workflow) ResultData {
 	variables := map[string]any{
 		"numWorkflowRuns": ghgql.Int(3),
 		"workflowId":      ghgql.ID(workflow.ID),

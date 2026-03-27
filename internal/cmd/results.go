@@ -4,11 +4,11 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/dhth/act3/internal/domain"
 	"github.com/dhth/act3/internal/gh"
-	"github.com/dhth/act3/internal/types"
 )
 
-func getResults(workflows []types.Workflow, config types.RunConfig) []gh.ResultData {
+func getResults(workflows []domain.Workflow, config domain.RunConfig) []gh.ResultData {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
 	resultsMap := make(map[string]gh.ResultData)
 	resultChannel := make(chan gh.ResultData)
@@ -17,7 +17,7 @@ func getResults(workflows []types.Workflow, config types.RunConfig) []gh.ResultD
 
 	for _, wf := range workflows {
 		wg.Add(1)
-		go func(workflow types.Workflow) {
+		go func(workflow domain.Workflow) {
 			defer wg.Done()
 			defer func() {
 				<-semaphore
