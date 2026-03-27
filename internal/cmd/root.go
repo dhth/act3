@@ -12,6 +12,7 @@ import (
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
 	"github.com/dhth/act3/internal/domain"
 	"github.com/dhth/act3/internal/utils"
+	"github.com/dhth/act3/internal/view"
 	"github.com/spf13/cobra"
 )
 
@@ -191,10 +192,12 @@ func NewRootCommand() (*cobra.Command, error) {
 
 			results := getResults(ghClient, workflows, config.CurrentRepo != nil)
 
-			err = render(results, config)
+			output, err := view.GetOutput(config, results)
 			if err != nil {
 				return err
 			}
+
+			fmt.Print(output)
 
 			if openFailed {
 				openFailedWorkflows(results)
