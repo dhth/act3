@@ -1,11 +1,6 @@
-package gh
+package domain
 
 import (
-	"fmt"
-
-	ghapi "github.com/cli/go-gh/v2/pkg/api"
-	ghgql "github.com/cli/shurcooL-graphql"
-	"github.com/dhth/act3/internal/domain"
 	"github.com/shurcooL/githubv4"
 )
 
@@ -76,13 +71,6 @@ type GetWorkflowResult struct {
 	Err     error
 }
 
-func GetWorkflowDetails(ghClient *ghapi.RESTClient, repo string) GetWorkflowResult {
-	// https://docs.github.com/en/rest/actions/workflows?apiVersion=2022-11-28#list-repository-workflows
-	var wd WorkflowDetails
-	err := ghClient.Get(fmt.Sprintf("repos/%s/actions/workflows", repo), &wd)
-	return GetWorkflowResult{Repo: repo, Details: wd, Err: err}
-}
-
 func (cs CheckSuite) IsAFailure() bool {
 	switch cs.Conclusion {
 	case CSConclusionActionReq, CSConclusionTimedOut, CSConclusionFailure, CSConclusionStartupFailure:
@@ -107,21 +95,7 @@ func (cs CheckSuite) ConclusionOrState() string {
 }
 
 type ResultData struct {
-	Workflow domain.Workflow
+	Workflow Workflow
 	Result   QueryResult
 	Err      error
-}
-
-func GetWorkflowRuns(ghClient *ghapi.GraphQLClient, workflow domain.Workflow) ResultData {
-	variables := map[string]any{
-		"numWorkflowRuns": ghgql.Int(3),
-		"workflowId":      ghgql.ID(workflow.ID),
-	}
-	var query QueryResult
-	err := ghClient.Query("GetWorkflows", &query, variables)
-	return ResultData{
-		Workflow: workflow,
-		Result:   query,
-		Err:      err,
-	}
 }

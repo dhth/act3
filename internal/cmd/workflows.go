@@ -7,7 +7,7 @@ import (
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
 	"github.com/dhth/act3/internal/domain"
-	"github.com/dhth/act3/internal/gh"
+	"github.com/dhth/act3/internal/service"
 )
 
 type WorkflowError struct {
@@ -17,7 +17,7 @@ type WorkflowError struct {
 
 func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string, filter *regexp.Regexp) ([]domain.Workflow, []WorkflowError) {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
-	resultChan := make(chan gh.GetWorkflowResult)
+	resultChan := make(chan domain.GetWorkflowResult)
 	var wg sync.WaitGroup
 
 	for _, repo := range repos {
@@ -28,7 +28,7 @@ func getWorkflowsForRepos(ghClient *ghapi.RESTClient, repos []string, filter *re
 				<-semaphore
 			}()
 			semaphore <- struct{}{}
-			resultChan <- gh.GetWorkflowDetails(ghClient, repo)
+			resultChan <- service.GetWorkflowDetails(ghClient, repo)
 		}(repo)
 	}
 

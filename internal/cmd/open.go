@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dhth/act3/internal/gh"
+	"github.com/dhth/act3/internal/domain"
 	"github.com/dhth/act3/internal/utils"
 )
 
-func openFailedWorkflows(results []gh.ResultData) {
+func openFailedWorkflows(results []domain.ResultData) {
 	var urls []string
 	for _, r := range results {
 		if r.Err != nil {

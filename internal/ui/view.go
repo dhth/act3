@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/dhth/act3/internal/domain"
-	"github.com/dhth/act3/internal/gh"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/renderer"
@@ -36,7 +35,7 @@ var (
 //go:embed assets/template.html
 var htmlTemplate string
 
-func GetOutput(config domain.RunConfig, results []gh.ResultData) (string, error) {
+func GetOutput(config domain.RunConfig, results []domain.ResultData) (string, error) {
 	switch config.Fmt {
 	case domain.TableFmt:
 		return getTabularOutput(config, results)
@@ -47,7 +46,7 @@ func GetOutput(config domain.RunConfig, results []gh.ResultData) (string, error)
 	}
 }
 
-func getTabularOutput(config domain.RunConfig, results []gh.ResultData) (string, error) {
+func getTabularOutput(config domain.RunConfig, results []domain.ResultData) (string, error) {
 	rows := make([][]string, len(results))
 
 	for i, data := range results {
@@ -119,7 +118,7 @@ func getTabularOutput(config domain.RunConfig, results []gh.ResultData) (string,
 	return b.String(), nil
 }
 
-func getTerminalOutput(config domain.RunConfig, results []gh.ResultData) string {
+func getTerminalOutput(config domain.RunConfig, results []domain.ResultData) string {
 	var s strings.Builder
 	s.WriteString("\n")
 	s.WriteString(" " + headerStyle.Render("act3"))
@@ -219,7 +218,7 @@ func getTerminalOutput(config domain.RunConfig, results []gh.ResultData) string 
 	return s.String()
 }
 
-func getHTMLOutput(config domain.RunConfig, results []gh.ResultData) (string, error) {
+func getHTMLOutput(config domain.RunConfig, results []domain.ResultData) (string, error) {
 	columns := make([]string, 0, 4)
 	rows := make([]htmlDataRow, len(results))
 

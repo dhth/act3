@@ -3,7 +3,7 @@ package ui
 import (
 	"strings"
 
-	"github.com/dhth/act3/internal/gh"
+	"github.com/dhth/act3/internal/domain"
 )
 
 func RightPadTrim(s string, length int) string {
@@ -26,8 +26,8 @@ func Trim(s string, length int) string {
 	return s
 }
 
-func getCheckSuiteIndicator(checkSuite gh.CheckSuite) string {
-	if checkSuite.Status != gh.CSStateCompleted {
+func getCheckSuiteIndicator(checkSuite domain.CheckSuite) string {
+	if checkSuite.Status != domain.CSStateCompleted {
 		return getCheckSuiteStateIndicator(checkSuite.Status)
 	}
 	return getCheckSuiteConclusionIndicator(checkSuite.Conclusion)
@@ -35,15 +35,15 @@ func getCheckSuiteIndicator(checkSuite gh.CheckSuite) string {
 
 func getCheckSuiteStateIndicator(state string) string {
 	switch state {
-	case gh.CSStateRequested:
+	case domain.CSStateRequested:
 		return "🙏"
-	case gh.CSStateQueued:
+	case domain.CSStateQueued:
 		return "⏯"
-	case gh.CSStateInProgress:
+	case domain.CSStateInProgress:
 		return "⏳"
-	case gh.CSStateWaiting:
+	case domain.CSStateWaiting:
 		return "🕓"
-	case gh.CSStatePending:
+	case domain.CSStatePending:
 		return "🟡"
 	default:
 		return ""
@@ -52,21 +52,21 @@ func getCheckSuiteStateIndicator(state string) string {
 
 func getCheckSuiteConclusionIndicator(conclusion string) string {
 	switch conclusion {
-	case gh.CSConclusionActionReq:
+	case domain.CSConclusionActionReq:
 		return "🔄"
-	case gh.CSConclusionTimedOut:
+	case domain.CSConclusionTimedOut:
 		return "⏰"
-	case gh.CSConclusionCancelled:
+	case domain.CSConclusionCancelled:
 		return "🚫"
-	case gh.CSConclusionFailure:
+	case domain.CSConclusionFailure:
 		return "❌"
-	case gh.CSConclusionSuccess:
+	case domain.CSConclusionSuccess:
 		return "✅"
-	case gh.CSConclusionNeutral:
+	case domain.CSConclusionNeutral:
 		return "😐"
-	case gh.CSConclusionSkipped:
+	case domain.CSConclusionSkipped:
 		return "⏭️"
-	case gh.CSConclusionStartupFailure:
+	case domain.CSConclusionStartupFailure:
 		return "🛑"
 	default:
 		return "🟡"

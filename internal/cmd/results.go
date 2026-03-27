@@ -5,15 +5,15 @@ import (
 	"sync"
 
 	"github.com/dhth/act3/internal/domain"
-	"github.com/dhth/act3/internal/gh"
+	"github.com/dhth/act3/internal/service"
 )
 
-func getResults(workflows []domain.Workflow, config domain.RunConfig) []gh.ResultData {
+func getResults(workflows []domain.Workflow, config domain.RunConfig) []domain.ResultData {
 	semaphore := make(chan struct{}, maxConcurrentFetches)
-	resultsMap := make(map[string]gh.ResultData)
-	resultChannel := make(chan gh.ResultData)
+	resultsMap := make(map[string]domain.ResultData)
+	resultChannel := make(chan domain.ResultData)
 	var wg sync.WaitGroup
-	var results []gh.ResultData
+	var results []domain.ResultData
 
 	for _, wf := range workflows {
 		wg.Add(1)
@@ -23,7 +23,7 @@ func getResults(workflows []domain.Workflow, config domain.RunConfig) []gh.Resul
 				<-semaphore
 			}()
 			semaphore <- struct{}{}
-			resultChannel <- gh.GetWorkflowRuns(config.GHClient, workflow)
+			resultChannel <- service.GetWorkflowRuns(config.GHClient, workflow)
 		}(wf)
 	}
 
@@ -37,7 +37,7 @@ func getResults(workflows []domain.Workflow, config domain.RunConfig) []gh.Resul
 	}
 
 	if config.CurrentRepo != nil {
-		resultsList := make([]gh.ResultData, 0, len(resultsMap))
+		resultsList := make([]domain.ResultData, 0, len(resultsMap))
 		for _, r := range resultsMap {
 			resultsList = append(resultsList, r)
 		}
@@ -48,7 +48,7 @@ func getResults(workflows []domain.Workflow, config domain.RunConfig) []gh.Resul
 		results = resultsList
 	} else {
 		// sort results in the sequence of the workflows received
-		resultsInConfigDefinedOrder := make([]gh.ResultData, len(workflows))
+		resultsInConfigDefinedOrder := make([]domain.ResultData, len(workflows))
 		for i, w := range workflows {
 			resultsInConfigDefinedOrder[i] = resultsMap[w.ID]
 		}
