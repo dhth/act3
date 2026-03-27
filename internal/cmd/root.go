@@ -10,8 +10,9 @@ import (
 	"time"
 
 	ghapi "github.com/cli/go-gh/v2/pkg/api"
-	"github.com/dhth/act3/internal/types"
+	"github.com/dhth/act3/internal/domain"
 	"github.com/dhth/act3/internal/utils"
+	"github.com/dhth/act3/internal/view"
 	"github.com/spf13/cobra"
 )
 
@@ -69,15 +70,15 @@ func NewRootCommand() (*cobra.Command, error) {
 				return fmt.Errorf("%w; -g and -r cannot both be provided at the same time", errFlagCombIncorrect)
 			}
 
-			var outputFmt types.OutputFmt
+			var outputFmt domain.OutputFmt
 			if formatStr != "" {
 				switch formatStr {
 				case "default":
-					outputFmt = types.DefaultFmt
+					outputFmt = domain.DefaultFmt
 				case "table":
-					outputFmt = types.TableFmt
+					outputFmt = domain.TableFmt
 				case "html":
-					outputFmt = types.HTMLFmt
+					outputFmt = domain.HTMLFmt
 				default:
 					return fmt.Errorf("%w", errIncorrectOutputFmt)
 				}
@@ -101,7 +102,7 @@ func NewRootCommand() (*cobra.Command, error) {
 				Timeout:     8 * time.Second,
 			}
 
-			var workflows []types.Workflow
+			var workflows []domain.Workflow
 			var reposToUse []string
 
 			if globalWorkflows {
@@ -173,7 +174,7 @@ func NewRootCommand() (*cobra.Command, error) {
 				return fmt.Errorf("%w", errNoWorkflows)
 			}
 
-			ghGQLClient, err := ghapi.NewGraphQLClient(clientOpts)
+			ghClient, err := ghapi.NewGraphQLClient(clientOpts)
 			if err != nil {
 				return fmt.Errorf("%w: %s", errCouldntGetGHClient, err.Error())
 			}
@@ -182,20 +183,21 @@ func NewRootCommand() (*cobra.Command, error) {
 			if !globalWorkflows && len(reposToUse) == 1 {
 				cr = &reposToUse[0]
 			}
-			config := types.RunConfig{
-				GHClient:     ghGQLClient,
+			config := domain.RunConfig{
 				CurrentRepo:  cr,
 				Fmt:          outputFmt,
 				HTMLTemplate: htmlTemplate,
 				HTMLTitle:    htmlTitle,
 			}
 
-			results := getResults(workflows, config)
+			results := getResults(ghClient, workflows, config.CurrentRepo != nil)
 
-			err = render(results, config)
+			output, err := view.GetOutput(config, results)
 			if err != nil {
 				return err
 			}
+
+			fmt.Print(output)
 
 			if openFailed {
 				openFailedWorkflows(results)

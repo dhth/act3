@@ -1,8 +1,8 @@
-package ui
+package view
 
 import (
 	"github.com/charmbracelet/lipgloss"
-	"github.com/dhth/act3/internal/gh"
+	"github.com/dhth/act3/internal/domain"
 )
 
 const (
@@ -60,11 +60,11 @@ var (
 	getCheckRunColor = func(checkSuiteConclusion string) string {
 		var color string
 		switch checkSuiteConclusion {
-		case gh.CSConclusionActionReq:
+		case domain.CSConclusionActionReq:
 			color = csActionReqColor
-		case gh.CSConclusionFailure, gh.CSConclusionStartupFailure:
+		case domain.CSConclusionFailure, domain.CSConclusionStartupFailure:
 			color = csFailureColor
-		case gh.CSConclusionSuccess:
+		case domain.CSConclusionSuccess:
 			color = csSuccessColor
 		case "":
 			color = errorColor

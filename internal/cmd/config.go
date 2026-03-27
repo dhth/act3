@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/dhth/act3/internal/types"
+	"github.com/dhth/act3/internal/domain"
 	"gopkg.in/yaml.v3"
 )
 
@@ -16,12 +16,12 @@ var (
 )
 
 type config struct {
-	Workflows []types.Workflow `yaml:"workflows"`
+	Workflows []domain.Workflow `yaml:"workflows"`
 }
 
-func getWorkflowsFromConfig(configBytes []byte) ([]types.Workflow, error) {
+func getWorkflowsFromConfig(configBytes []byte) ([]domain.Workflow, error) {
 	var cfg config
-	var zero []types.Workflow
+	var zero []domain.Workflow
 	err := yaml.Unmarshal(configBytes, &cfg)
 	if err != nil {
 		return zero, fmt.Errorf("%w: %s", errConfigNotValidYAML, err.Error())

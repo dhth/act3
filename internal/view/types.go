@@ -1,4 +1,4 @@
-package ui
+package view
 
 type htmlRunDetails struct {
 	NumberFormatted string

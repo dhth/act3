@@ -1,4 +1,4 @@
-package ui
+package view
 
 import (
 	"bytes"
@@ -9,8 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dhth/act3/internal/gh"
-	"github.com/dhth/act3/internal/types"
+	"github.com/dhth/act3/internal/domain"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/olekukonko/tablewriter"
 	"github.com/olekukonko/tablewriter/renderer"
@@ -36,18 +35,18 @@ var (
 //go:embed assets/template.html
 var htmlTemplate string
 
-func GetOutput(config types.RunConfig, results []gh.ResultData) (string, error) {
+func GetOutput(config domain.RunConfig, results []domain.ResultData) (string, error) {
 	switch config.Fmt {
-	case types.TableFmt:
+	case domain.TableFmt:
 		return getTabularOutput(config, results)
-	case types.HTMLFmt:
+	case domain.HTMLFmt:
 		return getHTMLOutput(config, results)
 	default:
 		return getTerminalOutput(config, results), nil
 	}
 }
 
-func getTabularOutput(config types.RunConfig, results []gh.ResultData) (string, error) {
+func getTabularOutput(config domain.RunConfig, results []domain.ResultData) (string, error) {
 	rows := make([][]string, len(results))
 
 	for i, data := range results {
@@ -119,7 +118,7 @@ func getTabularOutput(config types.RunConfig, results []gh.ResultData) (string, 
 	return b.String(), nil
 }
 
-func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
+func getTerminalOutput(config domain.RunConfig, results []domain.ResultData) string {
 	var s strings.Builder
 	s.WriteString("\n")
 	s.WriteString(" " + headerStyle.Render("act3"))
@@ -133,7 +132,7 @@ func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
 
 	headers := []string{"last", "2nd last", "3rd last"}
 	for _, header := range headers {
-		s.WriteString(fmt.Sprintf("%s    ", runNumberStyle.Render(header)))
+		fmt.Fprintf(&s, "%s    ", runNumberStyle.Render(header))
 	}
 
 	s.WriteString("\n\n")
@@ -219,7 +218,7 @@ func getTerminalOutput(config types.RunConfig, results []gh.ResultData) string {
 	return s.String()
 }
 
-func getHTMLOutput(config types.RunConfig, results []gh.ResultData) (string, error) {
+func getHTMLOutput(config domain.RunConfig, results []domain.ResultData) (string, error) {
 	columns := make([]string, 0, 4)
 	rows := make([]htmlDataRow, len(results))
 
