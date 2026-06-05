@@ -23,9 +23,6 @@ updates:
       cronjob: "0 5 1,15 * *"
     cooldown:
       default-days: 7
-    groups:
-      github-actions:
-        patterns: ["*"]
     labels:
       - "dependencies"
     commit-message:
