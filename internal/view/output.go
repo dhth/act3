@@ -20,6 +20,7 @@ const (
 	runNumberWidth   = 32
 	runNumberPadding = 8
 	dateFormat       = "Jan 02"
+	lastRunHeader    = "last"
 )
 
 const (
@@ -84,23 +85,23 @@ func getTabularOutput(config domain.RunConfig, results []domain.ResultData) (str
 		rows[i] = row
 	}
 
-	headers := []string{"workflow", "last", "2nd-last", "3rd-last"}
+	headers := []string{"workflow", lastRunHeader, "2nd-last", "3rd-last"}
 	b := bytes.Buffer{}
 
 	table := tablewriter.NewTable(&b,
 		tablewriter.WithConfig(tablewriter.Config{
 			Header: tw.CellConfig{
 				Formatting: tw.CellFormatting{
-					Alignment:  tw.AlignCenter,
 					AutoWrap:   tw.WrapNone,
 					AutoFormat: tw.Off,
 				},
+				Alignment: tw.CellAlignment{Global: tw.AlignCenter},
 			},
 			Row: tw.CellConfig{
 				Formatting: tw.CellFormatting{
-					Alignment: tw.AlignLeft,
-					AutoWrap:  tw.WrapNone,
+					AutoWrap: tw.WrapNone,
 				},
+				Alignment: tw.CellAlignment{Global: tw.AlignLeft},
 			},
 		}),
 		tablewriter.WithRenderer(renderer.NewBlueprint(tw.Rendition{Symbols: tw.NewSymbols(tw.StyleASCII)})),
@@ -130,7 +131,7 @@ func getTerminalOutput(config domain.RunConfig, results []domain.ResultData) str
 
 	s.WriteString(workflowStyle.Render("workflow"))
 
-	headers := []string{"last", "2nd last", "3rd last"}
+	headers := []string{lastRunHeader, "2nd last", "3rd last"}
 	for _, header := range headers {
 		fmt.Fprintf(&s, "%s    ", runNumberStyle.Render(header))
 	}
@@ -228,7 +229,7 @@ func getHTMLOutput(config domain.RunConfig, results []domain.ResultData) (string
 	}
 
 	columns = append(columns, "workflow")
-	columns = append(columns, []string{"last", "2nd last", "3rd last"}...)
+	columns = append(columns, []string{lastRunHeader, "2nd last", "3rd last"}...)
 	errorIndex := 0
 	var errors []error
 	nonSuccessfulRuns := make(map[string]string)

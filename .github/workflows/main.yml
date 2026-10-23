@@ -62,6 +62,8 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - uses: dhth/composite-actions/.github/actions/lint-go@main
+        with:
+          golangci-lint-version: v2.15.0
 
   test:
     needs: changes
